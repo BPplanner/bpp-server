@@ -162,14 +162,14 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+    'JWT_SECRET_KEY': SECRET_KEY,  # JWT의 비밀키로 어떤걸쓸지
+    'JWT_ALGORITHM': 'HS256',  # 암호화에 사용되는 알고리즘
+    'JWT_ALLOW_REFRESH': True,  # 토큰을 갱신할 수 있게 할지
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),  # 토큰의 유효기간
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 토큰갱신의 유효기간
 }
 
-REST_USE_JWT = True
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_LOGOUT_ON_GET = True
+REST_USE_JWT = True  # 로그인전에 JWT를 사용하고 싶을 때
+ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X
+ACCOUNT_EMAIL_VERIFICATION = "none"  # 로그인할때 email 사용X
+ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정

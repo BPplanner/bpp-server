@@ -155,12 +155,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         #'rest_framework.permissions.IsAuthenticated',
-        #'rest_framework.permissions.IsAdminUser'
+        #'rest_framework.permissions.IsAdminUser',
+        #'django_filters.rest_framework.DjangoFilterBackend'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         #'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
+}
+
+SIMPLE_JWT = {
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
 }
 
 JWT_AUTH = {
@@ -175,3 +182,5 @@ REST_USE_JWT = True  # 로그인전에 JWT를 사용하고 싶을 때
 ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X
 ACCOUNT_EMAIL_VERIFICATION = "none"  # 로그인할때 email 사용X
 ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정
+
+AUTH_USER_MODEL = 'login.User'

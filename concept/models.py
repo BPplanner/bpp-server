@@ -1,5 +1,6 @@
 from django.db import models
 from multiselectfield import MultiSelectField
+from studio.models import *
 
 class StudioConcept(models.Model):
     HEAD_COUNT_CHOICE = (

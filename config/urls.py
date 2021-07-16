@@ -31,6 +31,8 @@ urlpatterns = [
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('login/', include('login.urls')),
 
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # simple jwt
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # access , refresh token 발급
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 재발급 api 
 ]

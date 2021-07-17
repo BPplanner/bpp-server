@@ -188,4 +188,6 @@ ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X
 ACCOUNT_EMAIL_VERIFICATION = "none"  # 로그인할때 email 사용X
 ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정
 
+REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER':'login.models.CustomUserDetailsSerializer'}
+
 AUTH_USER_MODEL = 'login.User'

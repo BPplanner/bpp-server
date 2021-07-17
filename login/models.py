@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from datetime import datetime
+from rest_framework import serializers
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -38,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    uid = models.PositiveBigIntegerField(unique=True)
+    uid = models.PositiveBigIntegerField(unique=True, null = True)
     username = models.CharField(max_length=10)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -47,8 +49,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.uid
+        return str(self.uid)
 
     @property
     def is_staff(self):
         return self.is_admin
+    
+
+class CustomUserDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('uid',)
+        read_only_fields = ('uid',)

@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import datetime
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,33 +155,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        #'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated', -> 헤더에 auth인증된 user만 접근가능이 default 아닌 것만 따로 설정해주면 된다.
         #'rest_framework.permissions.IsAdminUser',
         #'django_filters.rest_framework.DjangoFilterBackend'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         #'rest_framework.authentication.TokenAuthentication',
-        #'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
+
+
 SIMPLE_JWT = {
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
-    'ROTATE_REFRESH_TOKENS': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
-JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,  # JWT의 비밀키로 어떤걸쓸지
-    'JWT_ALGORITHM': 'HS256',  # 암호화에 사용되는 알고리즘
-    'JWT_ALLOW_REFRESH': True,  # 토큰을 갱신할 수 있게 할지
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),  # 토큰의 유효기간
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 토큰갱신의 유효기간
-}
+# JWT_AUTH = {
+#     'JWT_SECRET_KEY': SECRET_KEY,  # JWT의 비밀키로 어떤걸쓸지
+#     'JWT_ALGORITHM': 'HS256',  # 암호화에 사용되는 알고리즘
+#     'JWT_ALLOW_REFRESH': True,  # 토큰을 갱신할 수 있게 할지
+#     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),  # 토큰의 유효기간
+#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 토큰갱신의 유효기간
+# }
 
 REST_USE_JWT = True  # 로그인전에 JWT를 사용하고 싶을 때
 ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X
 ACCOUNT_EMAIL_VERIFICATION = "none"  # 로그인할때 email 사용X
 ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정
+
+REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER':'login.models.CustomUserDetailsSerializer'}
 
 AUTH_USER_MODEL = 'login.User'

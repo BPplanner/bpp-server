@@ -34,5 +34,7 @@ urlpatterns = [
 
     # simple jwt
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # access , refresh token 발급
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 재발급 api 
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 재발급 api
 ]
+
+

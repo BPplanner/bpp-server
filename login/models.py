@@ -56,8 +56,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
     
 
+
+# email기 -> uid바꾸기 
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('uid',)
-        read_only_fields = ('uid',)
+        fields = ('uid','username','pk')
+        read_only_fields = ('uid','username','pk')

@@ -53,6 +53,9 @@ class SocialLoginSerializer(serializers.Serializer):
         request = self._get_request()
         social_login = adapter.complete_login(request, app, token, response=response)
         social_login.token = token
+        #print(dir(social_login))
+        #print(dir(social_login.account))
+        #print(social_login.account.uid)
         return social_login
 
     def validate(self, attrs):
@@ -118,6 +121,7 @@ class SocialLoginSerializer(serializers.Serializer):
         try:
             login = self.get_social_login(adapter, app, social_token, access_token)
             complete_social_login(request, login)
+            #print(login.user.uid)
         except HTTPError:
             raise serializers.ValidationError(_("Incorrect value"))
 
@@ -139,7 +143,8 @@ class SocialLoginSerializer(serializers.Serializer):
             login.lookup()
             login.save(request, connect=True)
 
-        login.account.user.uid=9998 # uid 넣어주기
+        #print(login.account.uid)
+        login.account.user.uid=login.account.uid # uid 넣어주기
         attrs['user'] = login.account.user
         login.account.user.save() #uid 넣어준거 저장
         #print(login.account.user.username)

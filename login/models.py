@@ -61,5 +61,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('uid','username','pk')
-        read_only_fields = ('uid','username','pk')
+        fields = ('uid','username','pk','password')
+        read_only_fields = ('uid','username','pk','password')

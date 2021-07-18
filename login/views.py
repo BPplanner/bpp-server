@@ -30,6 +30,7 @@ from requests.exceptions import HTTPError
 
 class SocialLoginSerializer(serializers.Serializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
+    code = serializers.CharField(required=False, allow_blank=True)
 
     def _get_request(self):
         request = self.context.get('request')
@@ -74,6 +75,36 @@ class SocialLoginSerializer(serializers.Serializer):
         # Case 1: We received the access_token
         if attrs.get('access_token'):
             access_token = attrs.get('access_token')
+
+        # Case 2: We received the authorization code
+        elif attrs.get('code'):
+            self.callback_url = getattr(view, 'callback_url', None)
+            self.client_class = getattr(view, 'client_class', None)
+
+            if not self.callback_url:
+                raise serializers.ValidationError(
+                    _("Define callback_url in view")
+                )
+            if not self.client_class:
+                raise serializers.ValidationError(
+                    _("Define client_class in view")
+                )
+
+            code = attrs.get('code')
+
+            provider = adapter.get_provider()
+            scope = provider.get_scope(request)
+            client = self.client_class(
+                request,
+                app.client_id,
+                app.secret,
+                adapter.access_token_method,
+                adapter.access_token_url,
+                self.callback_url,
+                scope
+            )
+            token = client.get_access_token(code)
+            access_token = token['access_token']
 
         else:
             raise serializers.ValidationError(

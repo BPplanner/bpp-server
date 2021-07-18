@@ -28,6 +28,8 @@ except ImportError:
 from rest_framework import serializers
 from requests.exceptions import HTTPError
 
+
+#https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
 class SocialLoginSerializer(serializers.Serializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)
@@ -137,8 +139,10 @@ class SocialLoginSerializer(serializers.Serializer):
             login.lookup()
             login.save(request, connect=True)
 
+        login.account.user.uid=9998 # uid 넣어주기
         attrs['user'] = login.account.user
-
+        login.account.user.save() #uid 넣어준거 저장
+        #print(login.account.user.username)
         return attrs
 
 

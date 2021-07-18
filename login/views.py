@@ -145,6 +145,7 @@ class SocialLoginSerializer(serializers.Serializer):
 
         #print(login.account.uid)
         login.account.user.uid=login.account.uid # uid 넣어주기
+        login.account.user.password="pbkdf2_sha256$260000$SRRJcKjQpREZysim8T8rKs$PLklmtznLCYEwHt9/jpRi6xH7GHBweAW18CY+POBikY=" #password 1234로 넣기
         attrs['user'] = login.account.user
         login.account.user.save() #uid 넣어준거 저장
         #print(login.account.user.username)

@@ -63,3 +63,5 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields = ('uid','username','pk')
         read_only_fields = ('uid','username','pk')
+
+

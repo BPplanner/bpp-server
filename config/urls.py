@@ -21,6 +21,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from login.views import MyTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,7 +35,7 @@ urlpatterns = [
 
 
     # simple jwt
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # access , refresh token 발급
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'), # access , refresh token 발급
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 재발급 api
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'), # 유효성검증 api
 ]

@@ -7,6 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
   
 from django.http import HttpRequest
@@ -199,3 +201,20 @@ def kakao_login_refresh(request):
 
     # POST아니거나 request에 refresh_token이 없을때 + access token 발급못했을때
     return Response(status=400)
+
+
+# customize payload
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        print(user)
+        
+        # Add custom claims
+        token['username'] = user.username
+        token['uid'] = user.uid
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

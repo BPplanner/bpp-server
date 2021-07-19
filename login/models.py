@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from datetime import datetime
-from rest_framework import serializers
 
 
 class UserManager(BaseUserManager):
@@ -55,13 +53,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin
     
-
-
-# email기 -> uid바꾸기 
-class CustomUserDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('uid','username','pk')
-        read_only_fields = ('uid','username','pk')
 
 

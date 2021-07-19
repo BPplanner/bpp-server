@@ -15,29 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-from login.views import MyTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-jwt-auth/', obtain_jwt_token),          # JWT 토큰 획득
-    path('api-jwt-auth/refresh/', refresh_jwt_token),  # JWT 토큰 갱신
-    path('api-jwt-auth/verify/', verify_jwt_token),   # JWT 토큰 확인
-
-    path('rest-auth/', include('rest_auth.urls')),
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('login/', include('login.urls')),
-
-
-    # simple jwt
-    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'), # access , refresh token 발급
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 재발급 api
-    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'), # 유효성검증 api
 ]
 
 

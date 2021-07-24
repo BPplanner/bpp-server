@@ -16,7 +16,7 @@ def new_tokens(request):
     
     # POST이면서 request에 access_token이 있을때
     if request.method == 'POST' and access_token != None:
-        url = "http://3.35.146.251:8000/login/rest-auth/kakao/"
+        url = "http://localhost:8000/login/rest-auth/kakao/"
         headers = {'Content-Type': 'application/json'}
         data = {"access_token": access_token}
         response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -24,7 +24,7 @@ def new_tokens(request):
         if response.status_code == 200:
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
-                'http://3.35.146.251:8000/login/token/', data={"uid": uid, "password":"1234"}).content)
+                'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content)
             return Response(new_body)
 
     return Response(status=400)

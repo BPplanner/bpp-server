@@ -19,4 +19,4 @@ class Shop(TimeStampMixin):
     logo = models.ImageField(blank=True)
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop
     like_users = models.ManyToManyField(User ,related_name="like_shops")
-    #pick_users = models.ManyToManyField(User, through='PickShop', related_name="pick_shops") #reservation에 중개모델
+    pick_users = models.ManyToManyField(User, through='PickShop', related_name="pick_shops") #reservation에 중개모델

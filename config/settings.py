@@ -157,6 +157,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    #Pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
     'DEFAULT_PERMISSION_CLASSES': (
         #'rest_framework.permissions.IsAuthenticated', -> 헤더에 auth인증된 user만 접근가능이 default 아닌 것만 따로 설정해주면 된다.
         #'rest_framework.permissions.IsAdminUser',

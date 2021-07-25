@@ -11,7 +11,7 @@ class TimeStampMixin(models.Model):
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, uid, username, password=None):
+    def create_user(self, uid, username, refresh, exp, password=None):
 
         if not uid:
             raise ValueError('must have user uid')
@@ -20,7 +20,9 @@ class UserManager(BaseUserManager):
 
         user = self.model(
             uid=uid,
-            username=username
+            username=username,
+            refresh = refresh,
+            exp = exp
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -46,6 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
 
     uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
     username = models.CharField(max_length=10)
+    exp = models.DateTimeField()
+    refresh = models.TextField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 

@@ -48,8 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
 
     uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
     username = models.CharField(max_length=10)
-    exp = models.DateTimeField()
-    refresh = models.TextField()
+    exp = models.DateTimeField(defualt=null)
+    refresh = models.TextField(unique=True, default=null)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 

@@ -23,11 +23,6 @@ class ReservationDetail(APIView):
             return Post.objects.get(pk=pk)
         except Post.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
-        post = self.get_object(pk)   # 이 class안에 get_object를 호출
-        serializer = PostSerializer(post)
-        return Response(serializer.data)
     
     def post(self, request, format=None):
         serializer = PostSerializer(data=request.data)
@@ -37,7 +32,7 @@ class ReservationDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         post = self.get_object(pk)
         serializer = PostSerializer(post, data=request.data, partial= True)
         if serializer.is_valid():

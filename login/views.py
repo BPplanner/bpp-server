@@ -8,6 +8,14 @@ from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,CustomUserDetailsSerializer
+import secrets
+import string
+
+char_string = string.ascii_letters + string.digits
+
+def getRandomString(size):
+    return ''.join(secrets.choice(char_string) for _ in range(size))
+
 
 @api_view(['POST'])
 def new_tokens(request):
@@ -24,10 +32,14 @@ def new_tokens(request):
         if response.status_code == 200:
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
-                'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content)
-            return Response(new_body)
+                'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생
+            new_body["secure_refresh"] = getRandomString(24) # secure random string
+            return Response(new_body) #자체 jwt refreash , access token 전달 
 
     return Response(status=400)
+
+
+
 
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter

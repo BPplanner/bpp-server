@@ -1,9 +1,6 @@
-import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-
 from django.db import models
 from login.models import *
-from reservation.models import *
+#from reservation.models import *
 
 class Shop(TimeStampMixin):
     STUDIO = 0 #0 대신 SHOP.STUDIO로 쓰기위해
@@ -22,4 +19,4 @@ class Shop(TimeStampMixin):
     logo = models.ImageField(blank=True, null=True)
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop
     like_users = models.ManyToManyField(User,related_name="like_shops")
-    pick_users = models.ManyToManyField(User, through='Reservation', related_name="pick_shops") #reservation에 중개모델
+    #pick_users = models.ManyToManyField(User, through='Reservation', related_name="pick_shops") #reservation에 중개모델

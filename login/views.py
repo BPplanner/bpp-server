@@ -8,10 +8,11 @@ from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,CustomUserDetailsSerializer
+from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
 import secrets
 import string
 from .models import *
-from datetime import datetime
+import datetime
 
 char_string = string.ascii_letters + string.digits
 
@@ -37,7 +38,7 @@ def new_tokens(request):
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
             user = User.objects.filter(uid=uid)
             user.refresh = getRandomString(24)  # secure random string
-            user.exp = datetime.now() + datetime.timedelta(day=7)
+            user.exp = datetime.datetime.now() + datetime.timedelta(day=7)
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 
@@ -47,9 +48,9 @@ def new_tokens(request):
 @api_view(['POST'])
 def refresh_token(request):
     # # request에 있는 access token과 refresh_token값
-    # access_token = json.loads(request.body.decode('utf-8')).get('access_token')
-    # refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
-    pass
+    access_token = json.loads(request.body.decode('utf-8')).get('access_token')
+    refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
+    user = JWTTokenUserAuthentication.get_user(access_token)
 
 
 

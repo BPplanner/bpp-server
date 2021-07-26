@@ -1,8 +1,8 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
 from django.db import models
 from login.models import *
-from shop.models import *
 from reservation.models import *
 
 class Shop(TimeStampMixin):

@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
@@ -48,8 +50,8 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
 
     uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
     username = models.CharField(max_length=10)
-    exp = models.DateTimeField(defualt=null)
-    refresh = models.TextField(unique=True, default=null)
+    exp = models.DateTimeField(blank=True, null=True)
+    refresh = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 

@@ -11,7 +11,7 @@ from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,Custo
 import secrets
 import string
 from .models import *
-import datetime
+from datetime import datetime
 
 char_string = string.ascii_letters + string.digits
 
@@ -35,14 +35,21 @@ def new_tokens(request):
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
-            user =User.objects.filter(uid=uid)
+            user = User.objects.filter(uid=uid)
             user.refresh = getRandomString(24)  # secure random string
-            user.exp = datetime.now() + exp
+            user.exp = datetime.now() + datetime.timedelta(day=7)
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 
     return Response(status=400)
 
+
+@api_view(['POST'])
+def refresh_token(request):
+    # # request에 있는 access token과 refresh_token값
+    # access_token = json.loads(request.body.decode('utf-8')).get('access_token')
+    # refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
+    pass
 
 
 

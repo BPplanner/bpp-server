@@ -3,5 +3,5 @@ from .models import *
 
 class PickShopSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PickShop
+        model = Reservation
         fields = '__all__'

@@ -10,7 +10,8 @@ class ShopSerializer(serializers.ModelSerializer):
         #exclude = ('created_at', 'updated_at', 'shop_type', 'like_users')
 
 class OneShopSerializer(serializers.ModelSerializer):
+    studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = Shop
-        fields = ('id','name','address','minprice','profile','affiliates')
-        depth = 1
+        fields = ('id','name','address','minprice','profile','affiliates','studio_concepts')
+        #depth = 1

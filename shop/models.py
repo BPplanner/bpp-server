@@ -11,11 +11,11 @@ class Shop(TimeStampMixin):
     )
 
     ADDRESS_CHOICES = (
-        ('강남구','강남구'),
-        ('강동구','강동구'),
-        ('광진구','광진구'),
-        ('마포구','마포구'),
-        ('서초구','서초구')
+        ('gangnam','강남구'),
+        ('gangdong','강동구'),
+        ('gwangjin','광진구'),
+        ('mapo','마포구'),
+        ('seocho','서초구')
     )
 
     name = models.CharField(max_length=20)

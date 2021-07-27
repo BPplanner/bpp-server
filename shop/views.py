@@ -11,7 +11,11 @@ paginator.page_size = 20 #한 page에 들어갈 수
 @api_view(['GET'])
 def studio_list(request):
     if request.method == 'GET':
-        studios = Shop.objects.filter(shop_type = Shop.STUDIO).order_by('-like_count') #좋아요수 내림차순으로
+        address = request.query_params.get('address','')
+        if address:
+            studios = Shop.objects.filter(shop_type = Shop.STUDIO, address= address).order_by('-like_count') #좋아요수 내림차순으로
+        else:
+            studios = Shop.objects.filter(shop_type = Shop.STUDIO).order_by('-like_count') #좋아요수 내림차순으로
         result_page = paginator.paginate_queryset(studios, request)
         serializer = ShopSerializer(result_page, many=True,context={"request": request})
         return Response(serializer.data)
@@ -20,7 +24,8 @@ def studio_list(request):
 def beautyshop_list(request):
     if request.method == 'GET':
         beautyshops = Shop.objects.filter(shop_type = Shop.BEAUTYSHOP).order_by('-like_count') #좋아요수 내림차순으로
-        serializer = ShopSerializer(beautyshops, many=True,context={"request": request})
+        result_page = paginator.paginate_queryset(beautyshops, request)
+        serializer = ShopSerializer(result_page, many=True,context={"request": request})
         return Response(serializer.data)
 
 @api_view(['GET'])

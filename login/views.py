@@ -8,11 +8,12 @@ from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,CustomUserDetailsSerializer
-from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
 import string
 from .models import *
 import datetime
+
 
 char_string = string.ascii_letters + string.digits
 
@@ -47,12 +48,22 @@ def new_tokens(request):
     return Response(status=400)
 
 
+
 @api_view(['POST'])
 def refresh_token(request):
-    # # request에 있는 access token과 refresh_token값
-    access_token = json.loads(request.body.decode('utf-8')).get('access_token')
+    # body에 있는 refresh_token값
     refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
-    user = JWTTokenUserAuthentication.get_user(access_token)
+
+    JWT_authenticator = JWTAuthentication()
+    response = JWT_authenticator.authenticate(request)
+    if response is not None:
+        user, token = response
+        print("this is decoded token claims", token.payload)
+        return Response(status=200)
+    else:
+        print("no token is provided in the header or the header is missing")
+
+    return Response(status=400)
 
 
 

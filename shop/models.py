@@ -30,3 +30,6 @@ class Shop(TimeStampMixin):
     like_users = models.ManyToManyField(User,related_name="like_shops", blank=True, null=True)
     like_count = models.IntegerField(default=0)
     #pick_users = models.ManyToManyField(User, through='Reservation', related_name="pick_shops") #reservation에 중개모델
+
+    def __str__(self):
+        return self.name

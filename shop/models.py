@@ -24,6 +24,7 @@ class Shop(TimeStampMixin):
     minprice = models.IntegerField()
     price_desc = models.ImageField(blank=True, null=True)
     profile = models.ImageField(blank=True, null=True) #컨셉중에서 대표사진
+    map = models.ImageField(blank=True, null=True) #지도
     kakaourl = models.URLField(blank=True, null=True)
     logo = models.ImageField(blank=True, null=True)
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop

@@ -8,14 +8,14 @@ from .models import *
 def studio_list(request):
     if request.method == 'GET':
         studios = Shop.objects.filter(shop_type = Shop.STUDIO)
-        serializer = ShopSerializer(studios, many=True)
+        serializer = ShopSerializer(studios, many=True,context={"request": request})
         return Response(serializer.data)
 
 @api_view(['GET'])
 def beautyshop_list(request):
     if request.method == 'GET':
         beautyshops = Shop.objects.filter(shop_type = Shop.BEAUTYSHOP)
-        serializer = ShopSerializer(beautyshops, many=True)
+        serializer = ShopSerializer(beautyshops, many=True,context={"request": request})
         return Response(serializer.data)
 
 @api_view(['GET'])

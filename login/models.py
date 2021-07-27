@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.utils import timezone
 
 class TimeStampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -11,7 +12,7 @@ class TimeStampMixin(models.Model):
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, uid, username, refresh, exp, password=None):
+    def create_user(self, uid, username, password=None):
 
         if not uid:
             raise ValueError('must have user uid')
@@ -21,8 +22,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             uid=uid,
             username=username,
-            refresh = refresh,
-            exp = exp
+
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             uid=uid,
             username = username,
-            password = password
+            password = password,
 
         )
         user.is_admin = True
@@ -48,7 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
 
     uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
     username = models.CharField(max_length=10)
-    exp = models.DateTimeField(blank=True, null=True)
+    exp = models.DateTimeField(default=timezone.now)
     refresh = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)

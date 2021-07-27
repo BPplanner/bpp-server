@@ -31,5 +31,8 @@ def shop_list(request, request_shop_type):
 def shop_detail(request,pk):
     if request.method == 'GET':
         shop = get_object_or_404(Shop, pk=pk)
-        serializer = OneShopSerializer(shop,context={"request": request})
+        if shop.shop_type == Shop.STUDIO:
+            serializer = OneStudioSerializer(shop,context={"request": request})
+        else:
+            serializer = OneBeautyShopSerializer(shop,context={"request": request})
         return Response(serializer.data)

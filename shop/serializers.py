@@ -14,9 +14,17 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = ('id','name','address','minprice','profile')
         #exclude = ('created_at', 'updated_at', 'shop_type', 'like_users')
 
-class OneShopSerializer(serializers.ModelSerializer):
+class OneStudioSerializer(serializers.ModelSerializer):
     #studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     concepts = StudioConceptSerializer(source='studio_concepts', many=True)
+    affiliates = AffiliateSerializer(read_only=True, many=True)
+    class Meta:
+        model = Shop
+        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates')
+
+class OneBeautyShopSerializer(serializers.ModelSerializer):
+    #studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    concepts = BeautyShopConceptSerializer(source='studio_concepts', many=True)
     affiliates = AffiliateSerializer(read_only=True, many=True)
     class Meta:
         model = Shop

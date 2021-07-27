@@ -12,4 +12,5 @@ class BeautyShopConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyShopConcept
         #fields = '__all__'
-        exclude = ('created_at', 'updated_at')
+        #exclude = ('created_at', 'updated_at')
+        fields = ('id','profile')

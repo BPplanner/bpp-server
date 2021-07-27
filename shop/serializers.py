@@ -21,4 +21,3 @@ class OneShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates')
-        depth = 1

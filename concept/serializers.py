@@ -5,7 +5,8 @@ class StudioConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudioConcept
         #fields = '__all__'
-        exclude = ('created_at', 'updated_at')
+        #exclude = ('created_at', 'updated_at')
+        fields = ('id','profile')
 
 class BeautyShopConceptSerializer(serializers.ModelSerializer):
     class Meta:

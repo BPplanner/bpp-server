@@ -36,9 +36,11 @@ def new_tokens(request):
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
-            user = User.objects.filter(uid=uid)
+            user = User.objects.get(uid=uid)
+            print(user)
             user.refresh = getRandomString(24)  # secure random string
-            user.exp = datetime.datetime.now() + datetime.timedelta(day=7)
+            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
+            user.save()
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 

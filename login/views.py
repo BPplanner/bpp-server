@@ -34,10 +34,6 @@ def new_token(request):
         headers = {'Content-Type': 'application/json'}
         data = {"access_token": access_token}
         response = requests.post(url, headers=headers, data=json.dumps(data))
-        print(response)
-        print(response.text)
-        print(response.headers)
-        print(response.content)
 
         if response.status_code == 200:
             uid = response.json()['user']['uid']

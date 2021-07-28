@@ -12,6 +12,13 @@ paginator.page_size = 20 #한 page에 들어갈 수
 def studio_concept_list(request):
     if request.method == 'GET':
         studio_concepts = StudioConcept.objects.all().order_by('-like_count')
+        #TODO 컨셉필터링 필요
+        print(list(studio_concepts[0].head_count))
+        print(list(studio_concepts[0].gender))
+        print(list(studio_concepts[0].background))
+        print(list(studio_concepts[0].prop))
+        print(list(studio_concepts[0].dress))
+
         result_page = paginator.paginate_queryset(studio_concepts, request)
         serializer = StudioConceptSerializer(result_page, many=True)
         new_dict = {"return_data": serializer.data}

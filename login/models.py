@@ -53,6 +53,10 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    indexes = [
+        models.Index(fields=['id'])
+    ]
+
     USERNAME_FIELD = 'uid'
     REQUIRED_FIELDS = ['username']
 

@@ -11,12 +11,14 @@ class CustomUserAdmin(admin.ModelAdmin):
 			'uid',
 			'username',
 			'refresh',
-			'exp'
+			'exp',
+			'pk'
 		)
 
 		list_display_links = (
 			'uid',
 			'username',
 			'refresh',
-			'exp'
+			'exp',
+			'pk'
 		)

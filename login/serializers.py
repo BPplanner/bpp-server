@@ -14,7 +14,7 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
-from rest_framework import serializers
+
 from requests.exceptions import HTTPError
 
 from rest_framework import serializers
@@ -46,9 +46,7 @@ class SocialLoginSerializer(serializers.Serializer):
         request = self._get_request()
         social_login = adapter.complete_login(request, app, token, response=response)
         social_login.token = token
-        #print(dir(social_login))
-        #print(dir(social_login.account))
-        #print(social_login.account.uid)
+
         return social_login
 
     def validate(self, attrs):

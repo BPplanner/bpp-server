@@ -39,7 +39,7 @@ def new_token(request):
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
             user = User.objects.get(uid=uid)
             print(user)
-            user.refresh = getRandomString(24)  # secure random string
+            user.refresh = getRandomString(200)  # secure random string
             user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
             user.save()
             new_body["refresh"] = user.refresh   # refresh token 수정
@@ -68,8 +68,7 @@ def refresh_token(request):
 
     user = User.objects.get(refresh=refresh_token)
     if user is not None :
-        
-
+        pass
 
 
 class KakaoLogin(SocialLoginView):

@@ -9,7 +9,7 @@ app_name = 'login'
 
 urlpatterns = [
     path('rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
-    path('new-tokens/', new_tokens, name='new_tokens'), # kakao access token -> access, refresh token
+    path('new-token/', new_token, name='new_tokens'), # kakao access token -> access, refresh token
     path('token/refresh/', refresh_token, name='token_refresh'), # 재발급 api
 
     # simple jwt

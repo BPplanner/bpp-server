@@ -8,11 +8,12 @@ from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,CustomUserDetailsSerializer
-from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
 import string
 from .models import *
 import datetime
+
 
 char_string = string.ascii_letters + string.digits
 
@@ -21,7 +22,7 @@ def getRandomString(size):
 
 
 @api_view(['POST'])
-def new_tokens(request):
+def new_token(request):
     # request에 있는 access_token값
     access_token = json.loads(request.body.decode('utf-8')).get('access_token')
     
@@ -36,21 +37,38 @@ def new_tokens(request):
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
-            user = User.objects.filter(uid=uid)
+            user = User.objects.get(uid=uid)
+            print(user)
             user.refresh = getRandomString(24)  # secure random string
-            user.exp = datetime.datetime.now() + datetime.timedelta(day=7)
+            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
+            user.save()
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 
     return Response(status=400)
 
 
+# user식별코드
+# JWT_authenticator = JWTAuthentication()
+#     response = JWT_authenticator.authenticate(request)
+#     if response is not None:
+#         user, token = response
+#         print(user)
+#         print("this is decoded token claims", token.payload)
+#         return Response(status=200)
+#     else:
+#         print("no token is provided in the header or the header is missing")
+#
+#     return Response(status=400)
+
 @api_view(['POST'])
 def refresh_token(request):
-    # # request에 있는 access token과 refresh_token값
-    access_token = json.loads(request.body.decode('utf-8')).get('access_token')
+    # body에 있는 refresh_token값
     refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
-    user = JWTTokenUserAuthentication.get_user(access_token)
+
+    user = User.objects.get(refresh=refresh_token)
+    if user is not None :
+        
 
 
 

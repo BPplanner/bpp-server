@@ -70,6 +70,7 @@ def refresh_token(request):
     if user is not None :
         pass
 
+        
 
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter

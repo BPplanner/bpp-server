@@ -39,8 +39,9 @@ DRESS_CHOICES = (
 class StudioConcept(TimeStampMixin):
     profile = models.ImageField()
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="studio_concepts")
-    like_users = models.ManyToManyField(User, related_name="like_concepts")
-    
+    like_users = models.ManyToManyField(User, related_name="like_studio_concepts", null=True,blank=True)
+    like_count = models.IntegerField(default=0)
+
     head_count = MultiSelectField(choices=HEAD_COUNT_CHOICES)
     gender = MultiSelectField(choices=GENDER_CHOICES)
     background = MultiSelectField(choices=BACKGROUND_CHOICES)
@@ -51,6 +52,8 @@ class StudioConcept(TimeStampMixin):
 class BeautyShopConcept(TimeStampMixin):
     profile = models.ImageField()
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
+    like_users = models.ManyToManyField(User, related_name="like_beautyshop_concepts", null=True,blank=True)
+    like_count = models.IntegerField(default=0)
     
 
 

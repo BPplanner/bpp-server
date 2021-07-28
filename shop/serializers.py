@@ -24,7 +24,7 @@ class OneStudioSerializer(serializers.ModelSerializer):
 
 class OneBeautyShopSerializer(serializers.ModelSerializer):
     #studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    concepts = BeautyShopConceptSerializer(source='studio_concepts', many=True)
+    concepts = BeautyShopConceptSerializer(source='beautyshop_concepts', many=True)
     affiliates = AffiliateSerializer(read_only=True, many=True)
     class Meta:
         model = Shop

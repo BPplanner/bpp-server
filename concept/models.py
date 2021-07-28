@@ -15,7 +15,6 @@ GENDER_CHOICES = (
     ('woman','여성'),
 )
 BACKGROUND_CHOICES = (
-    ('all','전체'),
     ('white','흰색'),
     ('black','검은색'),
     ('chromatic', '유채색'),
@@ -23,13 +22,11 @@ BACKGROUND_CHOICES = (
     ('outside','야외'),
 )
 PROP_CHOICES = (
-    ('all','전체'),
     ('health','헬스도구'),
     ('mini','소가구'),
     ('etc','기타소품'),
 )
 DRESS_CHOICES = (
-    ('all','전체'),
     ('athleisure','애슬레저'),
     ('swimsuit','수영복'),
     ('underwear','언더웨어'),

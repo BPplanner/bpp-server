@@ -29,7 +29,7 @@ def studio_concept_list(request):
                                 filtered_studio_concepts.append(studio_concept)
 
         result_page = paginator.paginate_queryset(filtered_studio_concepts, request)
-        serializer = StudioConceptSerializer(result_page, many=True)
+        serializer = StudioConceptSerializer(result_page, many=True,context={"request": request})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)
 

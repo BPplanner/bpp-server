@@ -65,10 +65,31 @@ def new_token(request):
 def refresh_token(request):
     # body에 있는 refresh_token값
     refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
+    user_id = json.loads(request.body.decode('utf-8')).get('user_id')
 
-    user = User.objects.get(refresh=refresh_token)
-    if user is not None :
-        pass
+    user = User.objects.get(id=user_id)
+    if refresh_token == user.refresh:
+
+        if user.exp > datetime.datetime.now(): # 유효할때
+            new_body = json.loads(requests.post(
+                'http://localhost:8000/login/token/', data={"uid": user.uid, "password":"1234"}).content) # jwt 토큰생성
+            return Response(new_body['access_token'])
+
+        else: # 만료되었을 때
+            msg = { 'error message' : 'refresh token is expired'}
+            return Response(msg, status=400)
+
+    else: # refresh token 일치하지 않을 때
+        msg = {'error message' : 'refresh token is mismatched'}
+        return Response(msg, status=400)
+
+
+
+
+
+
+
+
 
         
 

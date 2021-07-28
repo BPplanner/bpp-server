@@ -75,7 +75,7 @@ def refresh_token(request):
         if user.exp > timezone.now(): # 유효할때
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": user.uid, "password":"1234"}).content) # jwt 토큰생성
-            del new_body['refresh'] # refresh token 제거 
+            del new_body['refresh'] # refresh token 제거
             return Response(new_body)
 
         else: # 만료되었을 때

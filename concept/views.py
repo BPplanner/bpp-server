@@ -11,7 +11,7 @@ paginator.page_size = 20 #한 page에 들어갈 수
 @api_view(['GET'])
 def studio_concept_list(request):
     if request.method == 'GET':
-        studio_concepts = StudioConcept.objects.all()
+        studio_concepts = StudioConcept.objects.all().order_by('-like_count')
         result_page = paginator.paginate_queryset(studio_concepts, request)
         serializer = StudioConceptSerializer(result_page, many=True)
         return Response(serializer.data)
@@ -21,4 +21,11 @@ def studio_concept_detail(request,pk):
     if request.method == 'GET':
         studio_concept = get_object_or_404(StudioConcept, pk=pk)
         serializer = OneStudioConceptSerializer(studio_concept)
+        return Response(serializer.data)
+
+@api_view(['GET'])
+def beautyshop_concept_detail(request,pk):
+    if request.method == 'GET':
+        beautyshop_concept = get_object_or_404(BeautyShopConcept, pk=pk)
+        serializer = OneBeautyShopConceptSerializer(beautyshop_concept)
         return Response(serializer.data)

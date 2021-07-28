@@ -15,5 +15,5 @@ def studio_concept_list(request):
 def studio_concept_detail(request,pk):
     if request.method == 'GET':
         studio_concept = get_object_or_404(StudioConcept, pk=pk)
-        serializer = StudioConceptSerializer(studio_concept)
+        serializer = OneStudioConceptSerializer(studio_concept)
         return Response(serializer.data)

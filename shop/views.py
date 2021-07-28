@@ -25,7 +25,8 @@ def shop_list(request, request_shop_type):
             studios = Shop.objects.filter(shop_type = shop_type).order_by('-like_count') #좋아요수 내림차순으로
         result_page = paginator.paginate_queryset(studios, request)
         serializer = ShopSerializer(result_page, many=True,context={"request": request})
-        return Response(serializer.data)
+        new_dict = {"return_data": serializer.data}
+        return Response(new_dict)
 
 @api_view(['GET'])
 def shop_detail(request,pk):
@@ -35,4 +36,5 @@ def shop_detail(request,pk):
             serializer = OneStudioSerializer(shop,context={"request": request})
         else:
             serializer = OneBeautyShopSerializer(shop,context={"request": request})
-        return Response(serializer.data)
+        new_dict = {"return_data": serializer.data}
+        return Response(new_dict)

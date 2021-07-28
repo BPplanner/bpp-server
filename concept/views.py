@@ -21,11 +21,11 @@ def studio_concept_list(request):
         studio_concepts = StudioConcept.objects.all().order_by('-like_count') #좋아요순으로 studio concept 전체 불러오기
         filtered_studio_concepts=[]
         for studio_concept in studio_concepts:
-            if request_head_count==[] or (set(studio_concept.head_count) & set(request_head_count)): #전체 혹은 겹치는게있으면
-                if request_gender==[] or (set(studio_concept.gender) & set(request_gender)):
-                    if request_background==[] or (set(studio_concept.background) & set(request_background)):
-                        if request_prop==[] or (set(studio_concept.prop) & set(request_prop)):
-                            if request_dress==[] or (set(studio_concept.dress) & set(request_dress)):
+            if request_head_count==[] or request_head_count==[''] or (set(studio_concept.head_count) & set(request_head_count)): #전체 혹은 겹치는게있으면
+                if request_gender==[] or request_gender==[''] or (set(studio_concept.gender) & set(request_gender)):
+                    if request_background==[]or request_background==['']  or (set(studio_concept.background) & set(request_background)):
+                        if request_prop==[]or request_prop==['']  or (set(studio_concept.prop) & set(request_prop)):
+                            if request_dress==[]or request_dress==['']  or (set(studio_concept.dress) & set(request_dress)):
                                 filtered_studio_concepts.append(studio_concept)
 
         result_page = paginator.paginate_queryset(filtered_studio_concepts, request)

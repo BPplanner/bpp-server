@@ -22,7 +22,7 @@ def getRandomString(size):
 
 
 @api_view(['POST'])
-def new_tokens(request):
+def new_token(request):
     # request에 있는 access_token값
     access_token = json.loads(request.body.decode('utf-8')).get('access_token')
     
@@ -48,22 +48,27 @@ def new_tokens(request):
     return Response(status=400)
 
 
+# user식별코드
+# JWT_authenticator = JWTAuthentication()
+#     response = JWT_authenticator.authenticate(request)
+#     if response is not None:
+#         user, token = response
+#         print(user)
+#         print("this is decoded token claims", token.payload)
+#         return Response(status=200)
+#     else:
+#         print("no token is provided in the header or the header is missing")
+#
+#     return Response(status=400)
 
 @api_view(['POST'])
 def refresh_token(request):
     # body에 있는 refresh_token값
     refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
 
-    JWT_authenticator = JWTAuthentication()
-    response = JWT_authenticator.authenticate(request)
-    if response is not None:
-        user, token = response
-        print("this is decoded token claims", token.payload)
-        return Response(status=200)
-    else:
-        print("no token is provided in the header or the header is missing")
-
-    return Response(status=400)
+    user = User.objects.get(refresh=refresh_token)
+    if user is not None :
+        
 
 
 

@@ -37,7 +37,7 @@ def studio_concept_list(request):
 def studio_concept_detail(request,pk):
     if request.method == 'GET':
         studio_concept = get_object_or_404(StudioConcept, pk=pk)
-        serializer = OneStudioConceptSerializer(studio_concept)
+        serializer = OneStudioConceptSerializer(studio_concept,context={"request": request})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)
 
@@ -45,6 +45,6 @@ def studio_concept_detail(request,pk):
 def beautyshop_concept_detail(request,pk):
     if request.method == 'GET':
         beautyshop_concept = get_object_or_404(BeautyShopConcept, pk=pk)
-        serializer = OneBeautyShopConceptSerializer(beautyshop_concept)
+        serializer = OneBeautyShopConceptSerializer(beautyshop_concept,context={"request": request})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .serializers import *
@@ -8,9 +8,8 @@ from .models import *
 paginator = PageNumberPagination()
 paginator.page_size = 20 #한 page에 들어갈 수
 
-@api_view(['GET'])
-def studio_concept_list(request):
-    if request.method == 'GET':
+class StudioConceptList(APIView):
+    def get(self,request):
         #TODO 컨셉필터링 필요
         request_head_count = request.query_params.getlist('head_count')
         request_gender = request.query_params.getlist('gender')
@@ -33,17 +32,15 @@ def studio_concept_list(request):
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)
 
-@api_view(['GET'])
-def studio_concept_detail(request,pk):
-    if request.method == 'GET':
+class StudioConceptDetail(APIView):
+    def get(self, request, pk):
         studio_concept = get_object_or_404(StudioConcept, pk=pk)
         serializer = OneStudioConceptSerializer(studio_concept,context={"request": request})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)
 
-@api_view(['GET'])
-def beautyshop_concept_detail(request,pk):
-    if request.method == 'GET':
+class BeautyshopConceptDetail(APIView):
+    def get(self,request,pk):
         beautyshop_concept = get_object_or_404(BeautyShopConcept, pk=pk)
         serializer = OneBeautyShopConceptSerializer(beautyshop_concept,context={"request": request})
         new_dict = {"return_data": serializer.data}

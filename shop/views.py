@@ -26,8 +26,7 @@ class ShopList(APIView,PageNumberPagination):
         self.page_size=20
         result_page = self.paginate_queryset(studios, request, view=self)
         serializer = ShopSerializer(result_page, many=True,context={"request": request})
-        new_dict = {"return_data": serializer.data}
-        return self.get_paginated_response(new_dict)
+        return self.get_paginated_response(serializer.data)
 
 
 class ShopDetail(APIView):

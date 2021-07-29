@@ -28,8 +28,7 @@ class StudioConceptList(APIView,PageNumberPagination):
         self.page_size=20
         result_page = self.paginate_queryset(filtered_studio_concepts, request)
         serializer = StudioConceptSerializer(result_page, many=True,context={"request": request})
-        new_dict = {"return_data": serializer.data}
-        return self.get_paginated_response(new_dict)
+        return self.get_paginated_response(serializer.data)
 
 class StudioConceptDetail(APIView):
     def get(self, request, pk):

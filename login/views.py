@@ -91,11 +91,6 @@ def refresh_token(request):
 
 
 
-
-
-
-        
-
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter
     client_class = OAuth2Client

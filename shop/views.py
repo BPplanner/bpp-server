@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import *
 
-paginator = PageNumberPagination()
-paginator.page_size = 20 #한 page에 들어갈 수
 
-class ShopList(APIView):    
+
+class ShopList(APIView,PageNumberPagination):
+
     def get(self,request, request_shop_type):
         if request_shop_type == "studios": #studio 전체목록 조회
             shop_type = Shop.STUDIO
@@ -22,10 +22,12 @@ class ShopList(APIView):
             studios = Shop.objects.filter(shop_type = shop_type, address= address).order_by('-like_count') #좋아요수 내림차순으로
         else:
             studios = Shop.objects.filter(shop_type = shop_type).order_by('-like_count') #좋아요수 내림차순으로
-        result_page = paginator.paginate_queryset(studios, request)
+            
+        self.page_size=20
+        result_page = self.paginate_queryset(studios, request, view=self)
         serializer = ShopSerializer(result_page, many=True,context={"request": request})
         new_dict = {"return_data": serializer.data}
-        return Response(new_dict)
+        return self.get_paginated_response(new_dict)
 
 
 class ShopDetail(APIView):

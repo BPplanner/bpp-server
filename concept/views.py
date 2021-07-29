@@ -5,10 +5,9 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import *
 
-paginator = PageNumberPagination()
-paginator.page_size = 20 #한 page에 들어갈 수
 
-class StudioConceptList(APIView):
+
+class StudioConceptList(APIView,PageNumberPagination):
     def get(self,request):
         #TODO 컨셉필터링 필요
         request_head_count = request.query_params.getlist('head_count')
@@ -26,11 +25,11 @@ class StudioConceptList(APIView):
                         if request_prop==[]or request_prop==['']  or (set(studio_concept.prop) & set(request_prop)):
                             if request_dress==[]or request_dress==['']  or (set(studio_concept.dress) & set(request_dress)):
                                 filtered_studio_concepts.append(studio_concept)
-
-        result_page = paginator.paginate_queryset(filtered_studio_concepts, request)
+        self.page_size=20
+        result_page = self.paginate_queryset(filtered_studio_concepts, request)
         serializer = StudioConceptSerializer(result_page, many=True,context={"request": request})
         new_dict = {"return_data": serializer.data}
-        return Response(new_dict)
+        return self.get_paginated_response(new_dict)
 
 class StudioConceptDetail(APIView):
     def get(self, request, pk):

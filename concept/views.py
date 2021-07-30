@@ -17,14 +17,15 @@ class StudioConceptList(APIView,PageNumberPagination):
         request_prop = request.query_params.getlist('prop')
         request_dress = request.query_params.getlist('dress') #request parameter에 있는 리스트
         
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1].payload['user_id']
+            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+
         like = request.query_params.get('like','false') #like parameter 따로 없으면 false로
         if like=='true':
-            JWT_authenticator = JWTAuthentication()
-            response = JWT_authenticator.authenticate(request)
-            if response is not None:
-                user_id = response[1].payload['user_id']
-                user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
-                studio_concepts = user.like_studio_concepts.all() #user가 찜한 studio_concept들
+            studio_concepts = user.like_studio_concepts.all() #user가 찜한 studio_concept들
         else:
             studio_concepts = StudioConcept.objects.all() #찜관련 없이 모든 studio_concept들
 
@@ -39,7 +40,7 @@ class StudioConceptList(APIView,PageNumberPagination):
                                 filtered_studio_concepts.append(studio_concept)
         self.page_size=20
         result_page = self.paginate_queryset(filtered_studio_concepts, request)
-        serializer = StudioConceptSerializer(result_page, many=True,context={"request": request})
+        serializer = StudioConceptSerializer(result_page, many=True,context={"request": request,"user":user})
         return self.get_paginated_response(serializer.data)
 
 class StudioConceptLike(APIView):

@@ -28,10 +28,14 @@ class Shop(TimeStampMixin):
     kakaourl = models.URLField(blank=True, null=True)
     logo = models.ImageField(blank=True, null=True)
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop
-    like_users = models.ManyToManyField(User,related_name="like_shops", blank=True, null=True)
+    like_users = models.ManyToManyField(User,through='LikeShop',related_name="like_shops", blank=True, null=True)
     like_count = models.IntegerField(default=0)
     #pick_users = models.ManyToManyField(User, through='Reservation', related_name="pick_shops") #reservation에 중개모델
     affiliates = models.ManyToManyField('self',symmetrical=True, blank=True, null=True) #제휴업체 대칭적 관계로
 
     def __str__(self):
         return self.name
+
+class LikeShop(TimeStampMixin):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop,on_delete=models.CASCADE)

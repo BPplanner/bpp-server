@@ -3,5 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('<int:pk>/', ShopDetail.as_view()),
+    path('<int:pk>/like', ShopLike.as_view()),
     path('<str:request_shop_type>/', ShopList.as_view()),
 ]

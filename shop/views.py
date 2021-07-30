@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import APIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.authentication import JWTAuthentication
+import json
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
@@ -28,6 +30,36 @@ class ShopList(APIView,PageNumberPagination):
         serializer = ShopSerializer(result_page, many=True,context={"request": request})
         return self.get_paginated_response(serializer.data)
 
+class ShopLike(APIView):
+    def put(self,request,pk):
+        shop = get_object_or_404(Shop, pk=pk) #어떤 shop에 like할지
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1].payload['user_id']
+            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+            change_to_like = json.loads(request.body.decode('utf-8')).get('change_to_like') #true or false 받기
+            
+            if change_to_like=="true":
+                if LikeShop.objects.filter(shop=shop,user=user): #찜객체 이미 존재하면
+                    return Response({"detail": "already like exist"},status=400)
+
+                LikeShop.objects.create(shop=shop,user=user) #찜객체 만들기
+                shop.like_count+=1 #shop의 찜수 증가
+                return Response({"result":"shop like create"},status=200)
+
+            elif change_to_like=="false":
+                like_shop = get_object_or_404(LikeShop,shop=shop,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
+                like_shop.delete()
+                shop.like_count-=1 #shop의 찜수 감소
+                return Response({"result":"shop like delete"},status=200)
+
+            else:
+                return Response({"detail": "key should be true or false"}, status=400)
+        else:
+            print("no token is provided in the header or the header is missing")
+    
+        return Response(status=400)
 
 class ShopDetail(APIView):
     def get(self,request,pk):

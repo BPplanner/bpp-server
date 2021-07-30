@@ -77,9 +77,16 @@ class ShopLike(APIView):
 class ShopDetail(APIView):
     def get(self,request,pk):
         shop = get_object_or_404(Shop, pk=pk)
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1].payload['user_id']
+            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+            
         if shop.shop_type == Shop.STUDIO:
-            serializer = OneStudioSerializer(shop,context={"request": request})
+            serializer = OneStudioSerializer(shop,context={"request": request,"user":user})
         else:
-            serializer = OneBeautyShopSerializer(shop,context={"request": request})
+            serializer = OneBeautyShopSerializer(shop,context={"request": request,"user":user})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)

@@ -26,14 +26,30 @@ class OneStudioSerializer(serializers.ModelSerializer):
     #studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     concepts = StudioConceptSerializer(source='studio_concepts', many=True)
     affiliates = AffiliateSerializer(read_only=True, many=True)
+    like = serializers.SerializerMethodField('is_like')
+
     class Meta:
         model = Shop
-        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates')
+        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates','like')
+    
+    def is_like(self,obj):
+        if LikeShop.objects.filter(shop=obj.id,user=self.context['user'].id):
+            return "true"
+        else:
+            return "false"
 
 class OneBeautyShopSerializer(serializers.ModelSerializer):
     #studio_concepts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     concepts = BeautyShopConceptSerializer(source='beautyshop_concepts', many=True)
     affiliates = AffiliateSerializer(read_only=True, many=True)
+    like = serializers.SerializerMethodField('is_like')
+
     class Meta:
         model = Shop
-        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates')
+        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates','like')
+
+    def is_like(self,obj):
+        if LikeShop.objects.filter(shop=obj.id,user=self.context['user'].id):
+            return "true"
+        else:
+            return "false"

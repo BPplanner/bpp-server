@@ -22,7 +22,7 @@ class ShopList(APIView,PageNumberPagination):
             studios = Shop.objects.filter(shop_type = shop_type, address= address).order_by('-like_count') #좋아요수 내림차순으로
         else:
             studios = Shop.objects.filter(shop_type = shop_type).order_by('-like_count') #좋아요수 내림차순으로
-            
+
         self.page_size=20
         result_page = self.paginate_queryset(studios, request, view=self)
         serializer = ShopSerializer(result_page, many=True,context={"request": request})

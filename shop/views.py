@@ -19,14 +19,15 @@ class ShopList(APIView,PageNumberPagination):
         else: #url잘못입력
             return Response(status=404)
         
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1].payload['user_id']
+            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+        
         like = request.query_params.get('like','false') #like parameter 따로 없으면 false로
         if like=='true':
-            JWT_authenticator = JWTAuthentication()
-            response = JWT_authenticator.authenticate(request)
-            if response is not None:
-                user_id = response[1].payload['user_id']
-                user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
-                shops = user.like_shops.all() #user가 찜한 shop들
+            shops = user.like_shops.all() #user가 찜한 shop들
         else:
             shops = Shop.objects.all() #찜관련 없이 모든 shop들
 
@@ -39,7 +40,7 @@ class ShopList(APIView,PageNumberPagination):
 
         self.page_size=20
         result_page = self.paginate_queryset(studios, request, view=self)
-        serializer = ShopSerializer(result_page, many=True,context={"request": request})
+        serializer = ShopSerializer(result_page, many=True,context={"request": request,"user":user})
         return self.get_paginated_response(serializer.data)
 
 class ShopLike(APIView):

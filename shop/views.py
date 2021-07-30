@@ -18,12 +18,24 @@ class ShopList(APIView,PageNumberPagination):
             shop_type = Shop.BEAUTYSHOP
         else: #url잘못입력
             return Response(status=404)
+        
+        like = request.query_params.get('like','false') #like parameter 따로 없으면 false로
+        if like=='true':
+            JWT_authenticator = JWTAuthentication()
+            response = JWT_authenticator.authenticate(request)
+            if response is not None:
+                user_id = response[1].payload['user_id']
+                user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+                shops = user.like_shops.all() #user가 찜한 shop들
+        else:
+            shops = Shop.objects.all() #찜관련 없이 모든 shop들
+
 
         address = request.query_params.get('address','') #request parameter의 address가져오기(없다면 빈문자열로 가져오기)
         if address:
-            studios = Shop.objects.filter(shop_type = shop_type, address= address).order_by('-like_count') #좋아요수 내림차순으로
+            studios = shops.filter(shop_type = shop_type, address= address).order_by('-like_count') #좋아요수 내림차순으로
         else:
-            studios = Shop.objects.filter(shop_type = shop_type).order_by('-like_count') #좋아요수 내림차순으로
+            studios = shops.filter(shop_type = shop_type).order_by('-like_count') #좋아요수 내림차순으로
 
         self.page_size=20
         result_page = self.paginate_queryset(studios, request, view=self)

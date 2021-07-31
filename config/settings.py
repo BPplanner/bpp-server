@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,8 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'studio',
-    'beautyshop',
+    'shop',
     'concept',
     'reservation',
     'login',
@@ -55,8 +55,16 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_auth.registration',
-    'allauth.socialaccount.providers.kakao'
+    'allauth.socialaccount.providers.kakao',
+
+    #crontab
+    'django_crontab',
 ]
+
+CRONJOBS = [
+    ('* 0 * * *', 'reservation.cron.reservation_state_change')
+]
+
 
 SITE_ID = 1
 
@@ -147,6 +155,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -154,6 +166,10 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    #Pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
     'DEFAULT_PERMISSION_CLASSES': (
         #'rest_framework.permissions.IsAuthenticated', -> 헤더에 auth인증된 user만 접근가능이 default 아닌 것만 따로 설정해주면 된다.
         #'rest_framework.permissions.IsAdminUser',
@@ -174,14 +190,6 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
-
-# JWT_AUTH = {
-#     'JWT_SECRET_KEY': SECRET_KEY,  # JWT의 비밀키로 어떤걸쓸지
-#     'JWT_ALGORITHM': 'HS256',  # 암호화에 사용되는 알고리즘
-#     'JWT_ALLOW_REFRESH': True,  # 토큰을 갱신할 수 있게 할지
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),  # 토큰의 유효기간
-#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 토큰갱신의 유효기간
-# }
 
 REST_USE_JWT = True  # 로그인전에 JWT를 사용하고 싶을 때
 ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X

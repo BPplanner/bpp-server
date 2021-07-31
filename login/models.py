@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.utils import timezone
 
+class TimeStampMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now = True)
+
+    class Meta:
+        abstract = True
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -14,7 +21,8 @@ class UserManager(BaseUserManager):
 
         user = self.model(
             uid=uid,
-            username=username
+            username=username,
+
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -25,23 +33,28 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             uid=uid,
             username = username,
-            password = password
-
         )
+        user.set_password(password)
         user.is_admin = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
 
     objects = UserManager()
 
     uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
     username = models.CharField(max_length=10)
+    exp = models.DateTimeField(default=timezone.now)
+    refresh = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    indexes = [
+        models.Index(fields=['id'])
+    ]
 
     USERNAME_FIELD = 'uid'
     REQUIRED_FIELDS = ['username']

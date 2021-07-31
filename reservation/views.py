@@ -44,7 +44,7 @@ class ReservationDetail(APIView):
         try:
             return Reservation.objects.get(pk=pk)
         except Reservation.DoesNotExist:
-            return  Response(status=400, data= { 'error' : 'wrong parameters'})
+            return  Response(status=400, data= { "error" : "wrong parameters"})
 
 
     def patch(self, request, pk, format=None):
@@ -53,7 +53,7 @@ class ReservationDetail(APIView):
         if serializers.is_valid():
             serializers.save()
             return Response(status=201)
-        return  Response(status=400, data= { 'error' : 'wrong body'})
+        return  Response(status=400, data= { "error" : "wrong body"})
 
 
     def delete(self, request, pk, format=None):

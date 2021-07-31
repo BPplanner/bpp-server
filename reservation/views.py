@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import *
+from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 # apiview
 from rest_framework.views import APIView
@@ -19,14 +20,19 @@ def getUser(request):
 
 class AddReservation(APIView):
     def post(self, request, pk, format=None):
-        reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user_id=getUser(request).id, shop_id= pk)
+        shop = Shop.objects.filter(id=pk)
+        reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=getUser(request), shop= shop)
         reservation.save()
         return Response(status=200)
 
-class ReservationList(APIView):
+class ReservationList(APIView, PageNumberPagination):
     def get(self, request, format=None):
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
+        user = getUser(request)
+        reservations = user.reservation_set.all().order_by('-pk')
+
+        self.page_size = 10
+        page_result = self.paginate_queryset(reservations)
+        serializer = ReservationSerializer(page_result, many=True)
         return Response(serializer.data)
 
 

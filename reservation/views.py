@@ -24,7 +24,7 @@ class AddReservation(APIView):
         shop = Shop.objects.get(id=pk)
         reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=getUser(request), shop= shop)
         reservation.save()
-        return Response(status=200)
+        return Response(status=201)
 
 class ReservationList(APIView, PageNumberPagination):
     def get(self, request, format=None):
@@ -44,18 +44,20 @@ class ReservationDetail(APIView):
         try:
             return Reservation.objects.get(pk=pk)
         except Reservation.DoesNotExist:
-            return Response(status=404)
+            return  Response(status=400, data= { 'error' : 'wrong parameters'})
 
 
     def patch(self, request, pk, format=None):
         reservation = self.get_object(pk)
-        date = json.loads(request.body.decode('utf-8')).get('date')
-        reservation.reserved_date = date
-        reservation.save()
-        
-        return Response(status=200)
+        serializers = ReservationSerializer(reservation, data = request.data, partial=True)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(status=201)
+        return  Response(status=400, data= { 'error' : 'wrong body'})
+
 
     def delete(self, request, pk, format=None):
-        post = self.get_object(pk)
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        reservation = self.get_object(pk)
+        reservation.delete()
+
+        return Response(status=204)

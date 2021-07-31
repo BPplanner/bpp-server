@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from .models import *
 from rest_framework.pagination import PageNumberPagination
 from .serializers import *
@@ -28,36 +29,28 @@ class AddReservation(APIView):
 
 class ReservationList(APIView, PageNumberPagination):
     def get(self, request, format=None):
-        print(request.header)
         user = getUser(request)
         reservations = user.reservation_set.all().order_by('-pk')
 
         self.page_size = 10
         page_result = self.paginate_queryset(reservations, request, view=self)
         serializer = ReservationSerializer(page_result, many=True)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
 
 class ReservationDetail(APIView):
-    # 특정모델을 찾아주고 없다면 404에러 발생시켜줄 함수
-    def get_object(self, pk):
-        try:
-            return Reservation.objects.get(pk=pk)
-        except Reservation.DoesNotExist:
-            return  Response(status=400, data= { "error" : "wrong parameters"})
-
-
     def patch(self, request, pk, format=None):
-        reservation = self.get_object(pk)
-        serializers = ReservationSerializer(reservation, data = request.data, partial=True)
-        if serializers.is_valid():
-            serializers.save()
-            return Response(status=201)
-        return  Response(status=400, data= { "error" : "wrong body"})
+        reservation = get_object_or_404(Reservation, pk=pk)
+        reservation.state = Reservation.CONFIRMED
+        reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')
+        reservation.save()
+        return  Response(status=204)
+
+
 
 
     def delete(self, request, pk, format=None):
-        reservation = self.get_object(pk)
+        reservation = get_object_or_404(Reservation, pk=pk)
         reservation.delete()
 
         return Response(status=204)

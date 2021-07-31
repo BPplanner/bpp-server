@@ -16,7 +16,7 @@ def getUser(request):
         user, token = response
         return user
     else:
-        return Response(status=400, data={ 'error': "no token is provided in the header or the header is missing"})
+        return Response(status=400, data={ "error": "no token is provided in the header or the header is missing"})
 
 
 class AddReservation(APIView):

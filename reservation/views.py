@@ -10,8 +10,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 def getUser(request):
     JWT_authenticator = JWTAuthentication()
+    print(request.headers)
     response = JWT_authenticator.authenticate(request)
     if response is not None:
+        print(response)
+        print(response[1])
         user, token = response
         return user
     else:
@@ -27,6 +30,7 @@ class AddReservation(APIView):
 
 class ReservationList(APIView, PageNumberPagination):
     def get(self, request, format=None):
+        print(request.header)
         user = getUser(request)
         reservations = user.reservation_set.all().order_by('-pk')
 

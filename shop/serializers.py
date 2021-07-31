@@ -6,14 +6,14 @@ from concept.serializers import *
 class AffiliateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
-        fields = ('id','name','profile')
+        fields = ('id','name','profile_1')
 
 class ShopSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField('is_like')
 
     class Meta:
         model = Shop
-        fields = ('id','name','address','minprice','profile','like')
+        fields = ('id','name','address','minprice','profile_1','like')
         #exclude = ('created_at', 'updated_at', 'shop_type', 'like_users')
 
     def is_like(self,obj):
@@ -30,7 +30,7 @@ class OneStudioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates','like')
+        fields = ('id','name','address_detail','minprice','logo','profile_1','profile_2','profile_3','like','map','kakaourl','concepts','affiliates')
     
     def is_like(self,obj):
         if LikeShop.objects.filter(shop=obj.id,user=self.context['user'].id):
@@ -46,7 +46,7 @@ class OneBeautyShopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ('id','name','address_detail','minprice','logo','profile','map','kakaourl','concepts','affiliates','like')
+        fields = ('id','name','address_detail','minprice','logo','profile_1','profile_2','profile_3','map','kakaourl','concepts','affiliates','like')
 
     def is_like(self,obj):
         if LikeShop.objects.filter(shop=obj.id,user=self.context['user'].id):

@@ -55,8 +55,16 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_auth.registration',
-    'allauth.socialaccount.providers.kakao'
+    'allauth.socialaccount.providers.kakao',
+
+    #crontab
+    'django_crontab',
 ]
+
+CRONJOBS = [
+    ('* 0 * * *', 'reservation.cron.reservation_state_change')
+]
+
 
 SITE_ID = 1
 

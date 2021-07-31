@@ -4,10 +4,24 @@ from .serializers import *
 # apiview
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+def getUser(request):
+    JWT_authenticator = JWTAuthentication()
+    response = JWT_authenticator.authenticate(request)
+    if response is not None:
+        user, token = response
+        return user
+    else:
+        return Response(status=400, data={ 'error': "no token is provided in the header or the header is missing"})
 
 
 class AddReservation(APIView):
-    pass
+    def post(self, request, pk, format=None):
+        reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user_id=getUser(request).id, shop_id= pk)
+        reservation.save()
+        return Response(status=200)
 
 class ReservationList(APIView):
     def get(self, request, format=None):

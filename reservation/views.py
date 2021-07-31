@@ -6,14 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-
+class AddReservation(APIView):
+    pass
 
 class ReservationList(APIView):
     def get(self, request, format=None):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-
 
 
 class ReservationDetail(APIView):

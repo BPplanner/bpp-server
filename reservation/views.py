@@ -34,7 +34,7 @@ class ReservationList(APIView, PageNumberPagination):
 
         self.page_size = 10
         page_result = self.paginate_queryset(reservations, request, view=self)
-        serializer = ReservationSerializer(page_result, many=True)
+        serializer = ReservationSerializer(page_result, many=True, context={"request" : request})
         return self.get_paginated_response(serializer.data)
 
 

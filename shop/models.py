@@ -22,10 +22,11 @@ class Shop(TimeStampMixin):
     address = models.CharField(max_length = 20,choices=ADDRESS_CHOICES)
     address_detail = models.TextField(max_length=50)
     minprice = models.IntegerField()
+
     price_desc = models.ImageField(blank=True, null=True)
-    profile_1 = models.ImageField(blank=True, null=True) #컨셉중에서 대표사진1
-    profile_2 = models.ImageField(blank=True, null=True) #컨셉중에서 대표사진2
-    profile_3 = models.ImageField(blank=True, null=True) #컨셉중에서 대표사진3
+    profile_1 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진1
+    profile_2 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진2
+    profile_3 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진3
     map = models.ImageField(blank=True, null=True) #지도
     kakaourl = models.URLField(blank=True, null=True)
     logo = models.ImageField(blank=True, null=True)

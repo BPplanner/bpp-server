@@ -53,7 +53,7 @@ class ShopLike(APIView):
             user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
             change_to_like = json.loads(request.body.decode('utf-8')).get('change_to_like') #true or false 받기
             
-            if change_to_like=="true":
+            if change_to_like==True:
                 if LikeShop.objects.filter(shop=shop,user=user): #찜객체 이미 존재하면
                     return Response({"detail": "already like exist"},status=400)
 
@@ -61,7 +61,7 @@ class ShopLike(APIView):
                 shop.like_count+=1 #shop의 찜수 증가
                 return Response({"result":"shop like create"},status=200)
 
-            elif change_to_like=="false":
+            elif change_to_like==False:
                 like_shop = get_object_or_404(LikeShop,shop=shop,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
                 like_shop.delete()
                 shop.like_count-=1 #shop의 찜수 감소

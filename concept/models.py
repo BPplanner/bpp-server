@@ -52,8 +52,6 @@ class LikeStudioConcept(TimeStampMixin):
 class BeautyShopConcept(TimeStampMixin):
     profile = models.ImageField()
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
-    like_users = models.ManyToManyField(User, related_name="like_beautyshop_concepts", null=True,blank=True)
-    like_count = models.IntegerField(default=0)
     
 
 

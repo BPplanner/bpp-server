@@ -63,10 +63,10 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date') #예약날짜 저장
         reservation.save()
-        return Response(status=204)
+        return Response({"detail: reserved_date input success"}, status=200)
 
 
     def delete(self, request, pk, format=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.delete()
-        return Response(status=204)
+        return Response({"detail: reservation delete success"}, status=200)

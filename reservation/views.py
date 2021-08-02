@@ -23,10 +23,10 @@ def getUser(request):
 
 class AddReservation(APIView):
     def post(self, request, pk, format=None):
-        shop = Shop.objects.get(id=pk)
+        shop = get_object_or_404(Shop,id=pk) #해당shop없으면404
         reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=getUser(request), shop= shop)
         reservation.save()
-        return Response(status=201)
+        return Response({"result":"reservation create"},status=201)
 
 class ReservationList(APIView, PageNumberPagination):
 
@@ -34,11 +34,11 @@ class ReservationList(APIView, PageNumberPagination):
         user = getUser(request)
         params = request.query_params
 
-        print(params['inquiry'])
         if params['inquiry'] == 'true':
-            reservations = user.reservation_set.filter(state = Reservation.INQUIRY).order_by('-pk')
+            #스튜디오, 뷰티샵 나누고 그안에서 최신순으로
+            reservations = user.reservation_set.filter(state = Reservation.INQUIRY).order_by('shop__shop_type','-pk')
         else:
-            reservations = user.reservation_set.exclude(state = Reservation.INQUIRY).order_by('-pk')
+            reservations = user.reservation_set.exclude(state = Reservation.INQUIRY).order_by('shop__shop_type','-pk')
 
         self.page_size = 10
         page_result = self.paginate_queryset(reservations, request, view=self)
@@ -47,17 +47,16 @@ class ReservationList(APIView, PageNumberPagination):
 
 
 class ReservationDetail(APIView):
-
+    #TODO 예약날짜 오늘날짜 이후인지 확인하는 데코레이터
     def patch(self, request, pk, format=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.state = Reservation.CONFIRMED
-        reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')
+        reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date') #예약날짜 저장
         reservation.save()
-        return  Response(status=204)
+        return Response(status=204)
 
 
     def delete(self, request, pk, format=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.delete()
-
         return Response(status=204)

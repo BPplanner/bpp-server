@@ -24,7 +24,7 @@ class Shop(TimeStampMixin):
     minprice = models.IntegerField()
 
     price_desc = models.ImageField(blank=True, null=True)
-    profile_1 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진1
+    profile = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진1
     profile_2 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진2
     profile_3 = models.ImageField(blank=True, null=True)  # 컨셉중에서 대표사진3
     map = models.ImageField(blank=True, null=True) #지도

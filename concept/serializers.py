@@ -15,9 +15,9 @@ class StudioConceptSerializer(serializers.ModelSerializer):
     
     def is_like(self,obj):
         if LikeStudioConcept.objects.filter(studio_concept=obj.id,user=self.context['user'].id):
-            return "true"
+            return True
         else:
-            return "false"
+            return False
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

@@ -20,9 +20,9 @@ class ShopSerializer(serializers.ModelSerializer):
 
     def is_like(self, obj):
         if LikeShop.objects.filter(shop=obj.id, user=self.context['user'].id):
-            return "true"
+            return True
         else:
-            return "false"
+            return False
 
 
 class OneStudioSerializer(serializers.ModelSerializer):
@@ -40,9 +40,9 @@ class OneStudioSerializer(serializers.ModelSerializer):
 
     def is_like(self, obj):
         if LikeShop.objects.filter(shop=obj.id, user=self.context['user'].id):
-            return "true"
+            return True
         else:
-            return "false"
+            return False
 
     def profile_array(self,obj):
         return [self.context['request'].build_absolute_uri(obj.profile_1), self.context['request'].build_absolute_uri(obj.profile_2),
@@ -64,9 +64,9 @@ class OneBeautyShopSerializer(serializers.ModelSerializer):
 
     def is_like(self, obj):
         if LikeShop.objects.filter(shop=obj.id, user=self.context['user'].id):
-            return "true"
+            return True
         else:
-            return "false"
+            return False
     
     def profile_array(self,obj):
         return [self.context['request'].build_absolute_uri(obj.profile_1), self.context['request'].build_absolute_uri(obj.profile_2),

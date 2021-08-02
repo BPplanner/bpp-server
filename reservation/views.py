@@ -5,10 +5,12 @@ from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 import json
 from django.db.models import Q
+import datetime
 # apiview
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 
 def getUser(request):
@@ -28,7 +30,7 @@ class AddReservation(APIView):
         reservation.save()
         return Response({"result":"reservation create"},status=201)
 
-class ReservationList(APIView, PageNumberPagination):
+class ReservationList(APIView):
 
     def get(self, request, format=None):
         user = getUser(request)
@@ -40,10 +42,14 @@ class ReservationList(APIView, PageNumberPagination):
         else:
             reservations = user.reservation_set.exclude(state = Reservation.INQUIRY).order_by('shop__shop_type','-pk')
 
-        self.page_size = 10
-        page_result = self.paginate_queryset(reservations, request, view=self)
-        serializer = ReservationSerializer(page_result, many=True, context={"request" : request})
-        return self.get_paginated_response(serializer.data)
+        
+        confirmed_reservations = user.reservation_set.filter(state = Reservation.CONFIRMED).order_by('reserved_date')
+        if confirmed_reservations: #예약날짜 젤빠른거
+            remaining_days = (confirmed_reservations[0].reserved_date - datetime.date.today()).days
+        else:
+            remaining_days = None
+        serializer = ReservationSerializer(reservations, many=True, context={"request" : request})
+        return Response({"remaining_days":remaining_days,"return_data":serializer.data})
 
 
 class ReservationDetail(APIView):

@@ -35,10 +35,9 @@ class ReservationList(APIView, PageNumberPagination):
         params = request.query_params
 
         print(params['inquiry'])
-        if params['inquiry'] == 'True':
+        if params['inquiry'] == 'true':
             reservations = user.reservation_set.filter(state = Reservation.INQUIRY).order_by('-pk')
         else:
-
             reservations = user.reservation_set.exclude(state = Reservation.INQUIRY).order_by('-pk')
 
         self.page_size = 10

@@ -30,11 +30,12 @@ class OneStudioSerializer(serializers.ModelSerializer):
     concepts = StudioConceptSerializer(source='studio_concepts', many=True)
     affiliates = AffiliateSerializer(read_only=True, many=True)
     like = serializers.SerializerMethodField('is_like')
+    profiles = serializers.SerializerMethodField('profile_array')
 
     class Meta:
         model = Shop
         fields = (
-        'id', 'name', 'address_detail', 'minprice', 'logo', 'profile_1', 'profile_2', 'profile_3', 'like', 'map',
+        'id', 'name', 'address_detail', 'minprice', 'logo', 'profiles', 'like', 'map',
         'kakaourl', 'concepts', 'affiliates')
 
     def is_like(self, obj):
@@ -42,6 +43,10 @@ class OneStudioSerializer(serializers.ModelSerializer):
             return "true"
         else:
             return "false"
+
+    def profile_array(self,obj):
+        return [self.context['request'].build_absolute_uri(obj.profile_1), self.context['request'].build_absolute_uri(obj.profile_2),
+        self.context['request'].build_absolute_uri(obj.profile_3)]
 
 
 class OneBeautyShopSerializer(serializers.ModelSerializer):

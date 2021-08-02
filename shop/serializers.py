@@ -45,8 +45,8 @@ class OneStudioSerializer(serializers.ModelSerializer):
             return False
 
     def profile_array(self,obj):
-        return [self.context['request'].build_absolute_uri(obj.profile), self.context['request'].build_absolute_uri(obj.profile_2),
-        self.context['request'].build_absolute_uri(obj.profile_3)]
+        return [self.context['request'].build_absolute_uri(obj.profile.url), self.context['request'].build_absolute_uri(obj.profile_2.url),
+        self.context['request'].build_absolute_uri(obj.profile_3.url)]
 
 
 class OneBeautyShopSerializer(serializers.ModelSerializer):
@@ -69,5 +69,5 @@ class OneBeautyShopSerializer(serializers.ModelSerializer):
             return False
     
     def profile_array(self,obj):
-        return [self.context['request'].build_absolute_uri(obj.profile), self.context['request'].build_absolute_uri(obj.profile_2),
-        self.context['request'].build_absolute_uri(obj.profile_3)]
+        return [self.context['request'].build_absolute_uri(obj.profile.url), self.context['request'].build_absolute_uri(obj.profile_2.url),
+        self.context['request'].build_absolute_uri(obj.profile_3.url)]

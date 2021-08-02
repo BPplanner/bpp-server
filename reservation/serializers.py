@@ -13,5 +13,5 @@ class ReservationSerializer(serializers.ModelSerializer):
         
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['shop'] = ReservationShopSerializer(instance.shop).data
+        response['shop'] = ReservationShopSerializer(instance.shop, context={"request" : self.context['request']}).data
         return response

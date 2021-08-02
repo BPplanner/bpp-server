@@ -87,7 +87,7 @@ class ShopDetail(APIView):
             
         serializer = OneShopSerializer(shop,context={"request": request,"user":user})
         new_dict = {"return_data": serializer.data}
-        return Response(new_dict)
+        return Response(serializer.data)
 
 class ShopDetailConcept(APIView,PageNumberPagination):
     def get(self,request,pk):

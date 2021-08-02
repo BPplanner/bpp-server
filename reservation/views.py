@@ -57,16 +57,16 @@ class ReservationDetail(APIView):
     def patch(self, request, pk, format=None):
         input_date = datetime.datetime.strptime(json.loads(request.body.decode('utf-8')).get('reserved_date'),'%Y-%m-%d')
         if input_date < datetime.datetime.now(): #예약날짜가 오늘 이전일때
-            return Response({"detail: reserved_date should be after today"},status=400)
+            return Response({"detail": "reserved_date should be after today"},status=400)
             
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.state = Reservation.CONFIRMED
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date') #예약날짜 저장
         reservation.save()
-        return Response({"detail: reserved_date input success"}, status=200)
+        return Response({"detail": "reserved_date input success"}, status=200)
 
 
     def delete(self, request, pk, format=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.delete()
-        return Response({"detail: reservation delete success"}, status=200)
+        return Response({"detail": "reservation delete success"}, status=200)

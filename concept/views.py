@@ -53,7 +53,7 @@ class StudioConceptLike(APIView):
             user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
             change_to_like = json.loads(request.body.decode('utf-8')).get('change_to_like') #true or false 받기
             
-            if change_to_like=="true":
+            if change_to_like== True:
                 if LikeStudioConcept.objects.filter(studio_concept=studio_concept,user=user): #찜객체 이미 존재하면
                     return Response({"detail": "already like exist"},status=400)
 
@@ -61,7 +61,7 @@ class StudioConceptLike(APIView):
                 studio_concept.like_count+=1 #studio_concept의 찜수 증가
                 return Response({"result":"studio_concept like create"},status=200)
 
-            elif change_to_like=="false":
+            elif change_to_like== False:
                 like_studio_concept = get_object_or_404(LikeStudioConcept,studio_concept=studio_concept,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
                 like_studio_concept.delete()
                 studio_concept.like_count-=1 #studio_concept의 찜수 감소

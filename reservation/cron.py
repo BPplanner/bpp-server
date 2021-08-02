@@ -8,4 +8,7 @@ def reservation_state_change():
         if reservation.reserved_date == Reservation.CONFIRMED and reservation.reserved_date < timezone.now():
             reservation.state = Reservation.EXPIRATION
             reservation.save()
-        
+ 
+
+def hello():
+    print("hello")

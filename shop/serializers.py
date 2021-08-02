@@ -7,7 +7,7 @@ from concept.serializers import *
 class AffiliateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
-        fields = ('id', 'name', 'profile_1')
+        fields = ('id', 'name', 'profile')
 
 
 class ShopSerializer(serializers.ModelSerializer):
@@ -15,7 +15,7 @@ class ShopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ('id', 'name', 'address', 'minprice', 'profile_1', 'like')
+        fields = ('id', 'name', 'address', 'minprice', 'profile', 'like')
         # exclude = ('created_at', 'updated_at', 'shop_type', 'like_users')
 
     def is_like(self, obj):
@@ -45,8 +45,8 @@ class OneStudioSerializer(serializers.ModelSerializer):
             return False
 
     def profile_array(self,obj):
-        return [self.context['request'].build_absolute_uri(obj.profile_1), self.context['request'].build_absolute_uri(obj.profile_2),
-        self.context['request'].build_absolute_uri(obj.profile_3)]
+        return [self.context['request'].build_absolute_uri(obj.profile.url), self.context['request'].build_absolute_uri(obj.profile_2.url),
+        self.context['request'].build_absolute_uri(obj.profile_3.url)]
 
 
 class OneBeautyShopSerializer(serializers.ModelSerializer):
@@ -69,5 +69,5 @@ class OneBeautyShopSerializer(serializers.ModelSerializer):
             return False
     
     def profile_array(self,obj):
-        return [self.context['request'].build_absolute_uri(obj.profile_1), self.context['request'].build_absolute_uri(obj.profile_2),
-        self.context['request'].build_absolute_uri(obj.profile_3)]
+        return [self.context['request'].build_absolute_uri(obj.profile.url), self.context['request'].build_absolute_uri(obj.profile_2.url),
+        self.context['request'].build_absolute_uri(obj.profile_3.url)]

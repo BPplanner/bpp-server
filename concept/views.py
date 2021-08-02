@@ -73,17 +73,3 @@ class StudioConceptLike(APIView):
             print("no token is provided in the header or the header is missing")
     
         return Response(status=400)
-
-class StudioConceptDetail(APIView):
-    def get(self, request, pk):
-        studio_concept = get_object_or_404(StudioConcept, pk=pk)
-        serializer = OneStudioConceptSerializer(studio_concept,context={"request": request})
-        new_dict = {"return_data": serializer.data}
-        return Response(new_dict)
-
-class BeautyshopConceptDetail(APIView):
-    def get(self,request,pk):
-        beautyshop_concept = get_object_or_404(BeautyShopConcept, pk=pk)
-        serializer = OneBeautyShopConceptSerializer(beautyshop_concept,context={"request": request})
-        new_dict = {"return_data": serializer.data}
-        return Response(new_dict)

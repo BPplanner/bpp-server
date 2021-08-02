@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from .models import *
 
+#StudioConceptSerializer에서 shop 일부 정보만 표시용
 class StudioConceptShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ('id', 'name')
 
+#studio_concept 전체 목록(컨셉북) 조회
 class StudioConceptSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField('is_like')
 
@@ -24,17 +26,14 @@ class StudioConceptSerializer(serializers.ModelSerializer):
         response['shop'] = StudioConceptShopSerializer(instance.shop).data #id랑 이름만
         return response
 
+#ShopDetailConcept에서 StudioConcept 일부 정보만 표시용
 class OneStudioConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudioConcept
-        fields = ('id','profile','shop')
-
-class BeautyShopConceptSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BeautyShopConcept
         fields = ('id','profile')
 
+#ShopDetailConcept에서 BeautyShopConcept 일부 정보만 표시용
 class OneBeautyShopConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyShopConcept
-        fields = ('id','profile','shop')
+        fields = ('id','profile')

@@ -5,6 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 import json
 from rest_framework.response import Response
 from .serializers import *
+from concept.serializers import *
 from .models import *
 
 
@@ -84,9 +85,22 @@ class ShopDetail(APIView):
             user_id = response[1].payload['user_id']
             user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
             
-        if shop.shop_type == Shop.STUDIO:
-            serializer = OneStudioSerializer(shop,context={"request": request,"user":user})
-        else:
-            serializer = OneBeautyShopSerializer(shop,context={"request": request,"user":user})
+        serializer = OneShopSerializer(shop,context={"request": request,"user":user})
         new_dict = {"return_data": serializer.data}
         return Response(new_dict)
+
+class ShopDetailConcept(APIView,PageNumberPagination):
+    def get(self,request,pk):
+        shop = get_object_or_404(Shop, pk=pk)
+        if shop.shop_type == Shop.STUDIO:
+            concepts = shop.studio_concepts.all()
+        else:
+            concepts = shop.beautyshop_concepts.all() #beautyshop은 찜없어서 찜순정렬불가->그냥 등록순으로
+
+        self.page_size=20
+        result_page = self.paginate_queryset(concepts, request, view=self)
+        if shop.shop_type == Shop.STUDIO:
+            serializer = OneStudioConceptSerializer(result_page,many=True,context={"request": request})
+        else:
+            serializer = OneBeautyShopConceptSerializer(result_page,many=True,context={"request": request})
+        return self.get_paginated_response(serializer.data)

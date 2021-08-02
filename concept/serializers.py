@@ -1,13 +1,16 @@
 from rest_framework import serializers
 from .models import *
 
+class StudioConceptShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = ('id', 'name')
+
 class StudioConceptSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField('is_like')
 
     class Meta:
         model = StudioConcept
-        #fields = '__all__' #TODO 테스트끝나면 아래에 id랑 profile로만 보이게수정필요
-        #exclude = ('created_at', 'updated_at')
         fields = ('id','profile','shop','like')
     
     def is_like(self,obj):
@@ -16,23 +19,22 @@ class StudioConceptSerializer(serializers.ModelSerializer):
         else:
             return "false"
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['shop'] = StudioConceptShopSerializer(instance.shop).data #id랑 이름만
+        return response
+
 class OneStudioConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudioConcept
-        #fields = '__all__'
-        #exclude = ('created_at', 'updated_at')
         fields = ('id','profile','shop')
 
 class BeautyShopConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyShopConcept
-        #fields = '__all__'
-        #exclude = ('created_at', 'updated_at')
         fields = ('id','profile')
 
 class OneBeautyShopConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyShopConcept
-        #fields = '__all__'
-        #exclude = ('created_at', 'updated_at')
         fields = ('id','profile','shop')

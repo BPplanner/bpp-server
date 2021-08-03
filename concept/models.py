@@ -46,7 +46,7 @@ class StudioConcept(TimeStampMixin):
     dress = MultiSelectField(choices=DRESS_CHOICES)
 
     def __str__(self):
-        return self.shop.name + '의 컨셉'
+        return self.shop.name + '의 스튜디오컨셉'
 
 class LikeStudioConcept(TimeStampMixin):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -58,6 +58,7 @@ class BeautyShopConcept(TimeStampMixin):
     profile = models.ImageField()
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
     
-
+    def __str__(self):
+        return self.shop.name + '의 뷰티샵컨셉'
 
 

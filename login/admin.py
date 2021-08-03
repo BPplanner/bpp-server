@@ -8,17 +8,17 @@ from .models import User
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
 		list_display = (
+			'id',
 			'uid',
 			'username',
 			'refresh',
 			'exp',
-			'pk'
 		)
 
 		list_display_links = (
+			'id',
 			'uid',
 			'username',
 			'refresh',
 			'exp',
-			'pk'
 		)

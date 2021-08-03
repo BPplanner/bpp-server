@@ -43,14 +43,5 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(BeautyShopConcept)
-class CustomUserAdmin(admin.ModelAdmin):
-		list_display = (
-            'shop',
-				)
-
-
-		list_display_links = (
-            'shop',
-		)
+admin.site.register(BeautyShopConcept)
 

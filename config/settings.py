@@ -22,12 +22,14 @@ secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secrets.json 파일 위�
 with open(secret_file) as f:
     secrets = json.loads(f.read())
 
+
 def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
+
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
@@ -69,7 +71,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'allauth.socialaccount.providers.kakao',
 
-    #crontab
+    # crontab
     'django_crontab',
 ]
 
@@ -190,7 +192,6 @@ REST_FRAMEWORK = {
 }
 
 
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -203,6 +204,7 @@ ACCOUNT_EMAIL_REQUIRED = False  # 로그인할때 email 사용X
 ACCOUNT_EMAIL_VERIFICATION = "none"  # 로그인할때 email 사용X
 ACCOUNT_LOGOUT_ON_GET = True  # 로그아웃 설정
 
-REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER':'login.serializers.CustomUserDetailsSerializer'}
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'login.serializers.CustomUserDetailsSerializer'}
 
 AUTH_USER_MODEL = 'login.User'

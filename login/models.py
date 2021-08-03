@@ -2,12 +2,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 
+
 class TimeStampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now = True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -32,7 +34,7 @@ class UserManager(BaseUserManager):
 
         user = self.create_user(
             uid=uid,
-            username = username,
+            username=username,
         )
         user.set_password(password)
         user.is_admin = True
@@ -41,11 +43,11 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
 
     objects = UserManager()
 
-    uid = models.PositiveBigIntegerField(unique=True, null = True, default=0)
+    uid = models.PositiveBigIntegerField(unique=True, null=True, default=0)
     username = models.CharField(max_length=10)
     exp = models.DateTimeField(default=timezone.now)
     refresh = models.TextField(blank=True, null=True)
@@ -65,6 +67,3 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
     @property
     def is_staff(self):
         return self.is_admin
-    
-
-

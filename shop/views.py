@@ -4,6 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import json
 from rest_framework.response import Response
+from rest_framework import status
 from .serializers import *
 from concept.serializers import *
 from .models import *
@@ -18,7 +19,7 @@ class ShopList(APIView,PageNumberPagination):
         elif request_shop_type == "beautyshops": #beautyshop 전체목록 조회
             shop_type = Shop.BEAUTYSHOP
         else: #url잘못입력
-            return Response(status=404)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
@@ -56,24 +57,24 @@ class ShopLike(APIView):
             
             if change_to_like==True:
                 if LikeShop.objects.filter(shop=shop,user=user): #찜객체 이미 존재하면
-                    return Response({"detail": "already like exist"},status=400)
+                    return Response({"detail": "already like exist"},status=status.HTTP_400_BAD_REQUEST)
 
                 LikeShop.objects.create(shop=shop,user=user) #찜객체 만들기
                 shop.like_count+=1 #shop의 찜수 증가
-                return Response({"result":"shop like create"},status=200)
+                return Response({"result":"shop like create"},status=status.HTTP_200_OK)
 
             elif change_to_like==False:
                 like_shop = get_object_or_404(LikeShop,shop=shop,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
                 like_shop.delete()
                 shop.like_count-=1 #shop의 찜수 감소
-                return Response({"result":"shop like delete"},status=200)
+                return Response({"result":"shop like delete"},status=status.HTTP_200_OK)
 
             else:
-                return Response({"detail": "key should be true or false"}, status=400)
+                return Response({"detail": "key should be true or false"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             print("no token is provided in the header or the header is missing")
     
-        return Response(status=400)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class ShopDetail(APIView):
     def get(self,request,pk):

@@ -5,6 +5,7 @@ from rest_auth.registration.views import SocialLoginView
 import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import SocialLoginSerializer,MyTokenObtainPairSerializer,CustomUserDetailsSerializer
@@ -47,7 +48,7 @@ def new_token(request):
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 
-    return Response(status=400)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 # user식별코드
@@ -57,11 +58,11 @@ def new_token(request):
 #         user, token = response
 #         print(user)
 #         print("this is decoded token claims", token.payload)
-#         return Response(status=200)
+#         return Response(status=status.HTTP_200_OK)
 #     else:
 #         print("no token is provided in the header or the header is missing")
 #
-#     return Response(status=400)
+#     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def refresh_token(request):
@@ -80,11 +81,11 @@ def refresh_token(request):
 
         else: # 만료되었을 때
             msg = { 'error message' : 'refresh token is expired'}
-            return Response(msg, status=400)
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
     else: # refresh token 일치하지 않을 때
         msg = {'error message' : 'refresh token is mismatched'}
-        return Response(msg, status=400)
+        return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
 
 

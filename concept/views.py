@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import APIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import json
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
-
 
 
 class StudioConceptList(APIView,PageNumberPagination):
@@ -55,21 +55,21 @@ class StudioConceptLike(APIView):
             
             if change_to_like== True:
                 if LikeStudioConcept.objects.filter(studio_concept=studio_concept,user=user): #찜객체 이미 존재하면
-                    return Response({"detail": "already like exist"},status=400)
+                    return Response({"detail": "already like exist"},status=status.HTTP_400_BAD_REQUEST)
 
                 LikeStudioConcept.objects.create(studio_concept=studio_concept,user=user) #찜객체 만들기
                 studio_concept.like_count+=1 #studio_concept의 찜수 증가
-                return Response({"result":"studio_concept like create"},status=200)
+                return Response({"result":"studio_concept like create"},status=status.HTTP_200_OK)
 
             elif change_to_like== False:
                 like_studio_concept = get_object_or_404(LikeStudioConcept,studio_concept=studio_concept,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
                 like_studio_concept.delete()
                 studio_concept.like_count-=1 #studio_concept의 찜수 감소
-                return Response({"result":"studio_concept like delete"},status=200)
+                return Response({"result":"studio_concept like delete"},status=status.HTTP_200_OK)
 
             else:
-                return Response({"detail": "key should be true or false"}, status=400)
+                return Response({"detail": "key should be true or false"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             print("no token is provided in the header or the header is missing")
     
-        return Response(status=400)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -39,7 +39,7 @@ class ReservationList(APIView):
         else:
             remaining_days = None
         serializer = ReservationSerializer(reservations, many=True, context={"request": request})
-        return Response({"remaining_days": remaining_days, "result": serializer.data})
+        return Response({"remaining_days": remaining_days, "results": serializer.data})
 
 
 class ReservationDetail(APIView):

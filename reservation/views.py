@@ -10,31 +10,20 @@ import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
-
-def getUser(request):
-    JWT_authenticator = JWTAuthentication()
-    response = JWT_authenticator.authenticate(request)
-    if response is not None:
-        user, token = response
-        return user
-    else:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={ "error": "no token is provided in the header or the header is missing"})
+from login.views import get_user
 
 
 class AddReservation(APIView):
     def post(self, request, pk, format=None):
         shop = get_object_or_404(Shop,id=pk) #해당shop없으면404
-        reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=getUser(request), shop= shop)
+        reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=get_user(request), shop= shop)
         reservation.save()
         return Response({"result":"reservation create"},status=status.HTTP_201_CREATED)
 
 class ReservationList(APIView):
 
     def get(self, request, format=None):
-        user = getUser(request)
+        user = get_user(request)
         params = request.query_params
 
         if params['inquiry'] == 'true':
@@ -64,10 +53,10 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date') #예약날짜 저장
         reservation.save()
-        return Response({"detail": "reserved_date input success"}, status=status.HTTP_200_OK)
+        return Response({"detail": "reserved_date input success"}, status=status.HTTP_204_NO_CONTENT)
 
 
     def delete(self, request, pk, format=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         reservation.delete()
-        return Response({"detail": "reservation delete success"}, status=status.HTTP_200_OK)
+        return Response({"detail": "reservation delete success"}, status=status.HTTP_204_NO_CONTENT)

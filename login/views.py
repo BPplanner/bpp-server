@@ -1,5 +1,6 @@
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from django.shortcuts import get_object_or_404
 #from rest_auth.registration.serializers import SocialLoginSerializer
 from rest_auth.registration.views import SocialLoginView
 import requests
@@ -24,6 +25,15 @@ def getRandomString(size):
     return ''.join(secrets.choice(char_string) for _ in range(size))
 
 
+def get_user(request):
+    JWT_authenticator = JWTAuthentication()
+    response = JWT_authenticator.authenticate(request)
+    if response is not None:
+        user, token = response
+        return user
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={ "error": "no token is provided in the header or the header is missing"})
+
 @api_view(['POST'])
 def new_token(request):
     # request에 있는 access_token값
@@ -36,33 +46,20 @@ def new_token(request):
         data = {"access_token": access_token}
         response = requests.post(url, headers=headers, data=json.dumps(data))
 
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": uid, "password":"1234"}).content) # jwt 토큰생성
-            user = User.objects.get(uid=uid)
-            print(user)
+            user = get_object_or_404(User,uid=uid)
             user.refresh = getRandomString(200)  # secure random string
             user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
             user.save()
             new_body["refresh"] = user.refresh   # refresh token 수정
             return Response(new_body) # secure random string refreash , access token 전달
 
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:    
+        return Response({"detail": "access_token not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-
-# user식별코드
-# JWT_authenticator = JWTAuthentication()
-#     response = JWT_authenticator.authenticate(request)
-#     if response is not None:
-#         user, token = response
-#         print(user)
-#         print("this is decoded token claims", token.payload)
-#         return Response(status=status.HTTP_200_OK)
-#     else:
-#         print("no token is provided in the header or the header is missing")
-#
-#     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def refresh_token(request):
@@ -70,7 +67,7 @@ def refresh_token(request):
     refresh_token = json.loads(request.body.decode('utf-8')).get('refresh_token')
     user_id = json.loads(request.body.decode('utf-8')).get('user_id')
 
-    user = User.objects.get(id=user_id)
+    user = get_object_or_404(User,id=user_id)
     if refresh_token == user.refresh:
 
         if user.exp > timezone.now(): # 유효할때

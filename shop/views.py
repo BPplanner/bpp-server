@@ -8,11 +8,11 @@ from rest_framework import status
 from .serializers import *
 from concept.serializers import *
 from .models import *
+from login.views import get_user
 
 
 
 class ShopList(APIView,PageNumberPagination):
-
     def get(self,request, request_shop_type):
         if request_shop_type == "studios": #studio 전체목록 조회
             shop_type = Shop.STUDIO
@@ -21,11 +21,7 @@ class ShopList(APIView,PageNumberPagination):
         else: #url잘못입력
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        if response is not None:
-            user_id = response[1].payload['user_id']
-            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+        user = get_user(request)
         
         like = request.query_params.get('like','false') #like parameter 따로 없으면 false로
         if like=='true':
@@ -48,46 +44,33 @@ class ShopList(APIView,PageNumberPagination):
 class ShopLike(APIView):
     def put(self,request,pk):
         shop = get_object_or_404(Shop, pk=pk) #어떤 shop에 like할지
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        if response is not None:
-            user_id = response[1].payload['user_id']
-            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
-            change_to_like = json.loads(request.body.decode('utf-8')).get('change_to_like') #true or false 받기
-            
-            if change_to_like==True:
-                if LikeShop.objects.filter(shop=shop,user=user): #찜객체 이미 존재하면
-                    return Response({"detail": "already like exist"},status=status.HTTP_400_BAD_REQUEST)
+        user = get_user(request)
 
-                LikeShop.objects.create(shop=shop,user=user) #찜객체 만들기
-                shop.like_count+=1 #shop의 찜수 증가
-                return Response({"result":"shop like create"},status=status.HTTP_200_OK)
+        change_to_like = json.loads(request.body.decode('utf-8')).get('change_to_like') #true or false 받기
+        
+        if change_to_like==True:
+            if LikeShop.objects.filter(shop=shop,user=user): #찜객체 이미 존재하면
+                return Response({"detail": "already like exist"},status=status.HTTP_400_BAD_REQUEST)
 
-            elif change_to_like==False:
-                like_shop = get_object_or_404(LikeShop,shop=shop,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
-                like_shop.delete()
-                shop.like_count-=1 #shop의 찜수 감소
-                return Response({"result":"shop like delete"},status=status.HTTP_200_OK)
+            LikeShop.objects.create(shop=shop,user=user) #찜객체 만들기
+            shop.like_count+=1 #shop의 찜수 증가
+            return Response({"result":"shop like create"},status=status.HTTP_201_CREATED)
 
-            else:
-                return Response({"detail": "key should be true or false"}, status=status.HTTP_400_BAD_REQUEST)
+        elif change_to_like==False:
+            like_shop = get_object_or_404(LikeShop,shop=shop,user=user) #찜객체 제거(찜객체 애초에 없으면 404)
+            like_shop.delete()
+            shop.like_count-=1 #shop의 찜수 감소
+            return Response({"result":"shop like delete"},status=status.HTTP_204_NO_CONTENT)
+
         else:
-            print("no token is provided in the header or the header is missing")
-    
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "key should be true or false"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ShopDetail(APIView):
     def get(self,request,pk):
         shop = get_object_or_404(Shop, pk=pk)
-
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        if response is not None:
-            user_id = response[1].payload['user_id']
-            user = get_object_or_404(User,id=user_id) #access_token에서 user가져오기
+        user = get_user(request)
             
         serializer = OneShopSerializer(shop,context={"request": request,"user":user})
-        new_dict = {"return_data": serializer.data}
         return Response(serializer.data)
 
 class ShopDetailConcept(APIView,PageNumberPagination):

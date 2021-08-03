@@ -7,7 +7,7 @@ def reservation_state_change():
     now = datetime.datetime.now()
     today = now.strftime('%Y-%m-%d')
     for reservation in reservations:
-        if reservation.state == Reservation.CONFIRMED and reservation.reserved_date < today
+        if reservation.state == Reservation.CONFIRMED and reservation.reserved_date < today:
             reservation.state = Reservation.EXPIRATION
             reservation.save()
 

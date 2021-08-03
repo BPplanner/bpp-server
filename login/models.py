@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin,TimeStampMixin):
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return str(self.uid)
+        return str(self.uid) + ' ' + self.username
 
     @property
     def is_staff(self):

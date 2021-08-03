@@ -33,8 +33,8 @@ def get_user(request):
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"error": "no token is provided in the header or the header is missing"})
-
-
+    
+    
 @api_view(['POST'])
 def new_token(request):
     # request에 있는 access_token값

@@ -1,7 +1,56 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
-admin.site.register(StudioConcept)
-admin.site.register(LikeStudioConcept)
-admin.site.register(BeautyShopConcept)
+
+@admin.register(StudioConcept)
+class CustomUserAdmin(admin.ModelAdmin):
+		list_display = (
+            'shop',
+            'like_count',
+            'gender',
+            'head_count',
+            'background',
+            'prop',
+            'dress',
+				)
+
+
+		list_display_links = (
+            'shop',
+            'like_count',
+            'gender',
+            'head_count',
+            'background',
+            'prop',
+            'dress',
+		)
+
+
+
+@admin.register(LikeStudioConcept)
+class CustomUserAdmin(admin.ModelAdmin):
+		list_display = (
+            'studio_concept',
+            'user'
+        
+				)
+
+
+		list_display_links = (
+            'studio_concept',
+            'user'
+		)
+
+
+
+@admin.register(BeautyShopConcept)
+class CustomUserAdmin(admin.ModelAdmin):
+		list_display = (
+            'shop',
+				)
+
+
+		list_display_links = (
+            'shop',
+		)
+

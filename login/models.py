@@ -44,7 +44,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
-
     objects = UserManager()
 
     uid = models.PositiveBigIntegerField(unique=True, null=True, default=0)

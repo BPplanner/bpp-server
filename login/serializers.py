@@ -14,7 +14,6 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
-
 from requests.exceptions import HTTPError
 
 from rest_framework import serializers
@@ -22,7 +21,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
 
-#https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
+
+# https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
 class SocialLoginSerializer(serializers.Serializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)
@@ -112,7 +112,7 @@ class SocialLoginSerializer(serializers.Serializer):
         try:
             login = self.get_social_login(adapter, app, social_token, access_token)
             complete_social_login(request, login)
-            #print(login.user.uid)
+            # print(login.user.uid)
         except HTTPError:
             raise serializers.ValidationError(_("Incorrect value"))
 
@@ -134,13 +134,14 @@ class SocialLoginSerializer(serializers.Serializer):
             login.lookup()
             login.save(request, connect=True)
 
-        #print(login.account.uid)
-        login.account.user.uid=login.account.uid # uid 넣어주기
-        login.account.user.password="pbkdf2_sha256$260000$SRRJcKjQpREZysim8T8rKs$PLklmtznLCYEwHt9/jpRi6xH7GHBweAW18CY+POBikY=" #password 1234로 넣기
+        # print(login.account.uid)
+        login.account.user.uid = login.account.uid  # uid 넣어주기
+        login.account.user.password = "pbkdf2_sha256$260000$SRRJcKjQpREZysim8T8rKs$PLklmtznLCYEwHt9/jpRi6xH7GHBweAW18CY+POBikY="  # password 1234로 넣기
         attrs['user'] = login.account.user
-        login.account.user.save() #uid 넣어준거 저장
-        #print(login.account.user.username)
+        login.account.user.save()  # uid 넣어준거 저장
+        # print(login.account.user.username)
         return attrs
+
 
 # customize payload
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -148,16 +149,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         print(user)
-        
+
         # Add custom claims
         token['username'] = user.username
         token['uid'] = user.uid
 
         return token
 
+
 # email기 -> uid바꾸기 
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('uid','username','pk')
-        read_only_fields = ('uid','username','pk')
+        fields = ('uid', 'username', 'pk')
+        read_only_fields = ('uid', 'username', 'pk')

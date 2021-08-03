@@ -12,18 +12,30 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import json
 import os
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secrets.json 파일 위치를 명시
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7vmw^08vcjgn8hil9x4@9#b^^g9u8)6(k%8*-pa&ntbsk*06gj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -167,18 +179,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    #Pagination
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
-
-    'DEFAULT_PERMISSION_CLASSES': (
-        #'rest_framework.permissions.IsAuthenticated', -> 헤더에 auth인증된 user만 접근가능이 default 아닌 것만 따로 설정해주면 된다.
-        #'rest_framework.permissions.IsAdminUser',
-        #'django_filters.rest_framework.DjangoFilterBackend'
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     #'rest_framework.permissions.IsAuthenticated', -> 헤더에 auth인증된 user만 접근가능이 default 아닌 것만 따로 설정해주면 된다.
+    #     #'rest_framework.permissions.IsAdminUser',
+    #     #'django_filters.rest_framework.DjangoFilterBackend'
+    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        #'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }

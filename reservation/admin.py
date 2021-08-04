@@ -1,5 +1,21 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
-admin.site.register(Reservation)
+
+@admin.register(Reservation)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'state',
+        'reserved_date',
+        'user',
+        'shop',
+    )
+
+    list_display_links = (
+        'id',
+        'state',
+        'reserved_date',
+        'user',
+        'shop',
+    )

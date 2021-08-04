@@ -11,32 +11,35 @@ HEAD_COUNT_CHOICES = (
     (3, '3인이상'),
 )
 GENDER_CHOICES = (
-    ('man','남성'),
-    ('woman','여성'),
+    ('man', '남성'),
+    ('woman', '여성'),
 )
 BACKGROUND_CHOICES = (
-    ('white','흰색'),
-    ('black','검은색'),
+    ('white', '흰색'),
+    ('black', '검은색'),
     ('chromatic', '유채색'),
-    ('etc','기타배경'),
-    ('outside','야외'),
+    ('etc', '기타배경'),
+    ('outside', '야외'),
 )
 PROP_CHOICES = (
-    ('health','헬스도구'),
-    ('mini','소가구'),
-    ('etc','기타소품'),
+    ('health', '헬스도구'),
+    ('mini', '소가구'),
+    ('etc', '기타소품'),
 )
 DRESS_CHOICES = (
-    ('athleisure','애슬레저'),
-    ('swimsuit','수영복'),
-    ('underwear','언더웨어'),
-    ('etc','기타')
+    ('athleisure', '애슬레저'),
+    ('swimsuit', '수영복'),
+    ('underwear', '언더웨어'),
+    ('etc', '기타')
 )
+
 
 class StudioConcept(TimeStampMixin):
     profile = models.ImageField()
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="studio_concepts")
-    like_users = models.ManyToManyField(User, through='LikeStudioConcept',related_name="like_studio_concepts", null=True,blank=True)
+    shop = models.ForeignKey(
+        Shop, on_delete=models.CASCADE, related_name="studio_concepts")
+    like_users = models.ManyToManyField(
+        User, through='LikeStudioConcept', related_name="like_studio_concepts", null=True, blank=True)
     like_count = models.IntegerField(default=0)
 
     head_count = MultiSelectField(choices=HEAD_COUNT_CHOICES)
@@ -45,16 +48,19 @@ class StudioConcept(TimeStampMixin):
     prop = MultiSelectField(choices=PROP_CHOICES)
     dress = MultiSelectField(choices=DRESS_CHOICES)
 
+    def __str__(self):
+        return self.shop.name + '의 스튜디오컨셉'
+
+
 class LikeStudioConcept(TimeStampMixin):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    studio_concept = models.ForeignKey(StudioConcept,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    studio_concept = models.ForeignKey(StudioConcept, on_delete=models.CASCADE)
+
 
 class BeautyShopConcept(TimeStampMixin):
     profile = models.ImageField()
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
-    like_users = models.ManyToManyField(User, related_name="like_beautyshop_concepts", null=True,blank=True)
-    like_count = models.IntegerField(default=0)
-    
+    shop = models.ForeignKey(
+        Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
 
-
-
+    def __str__(self):
+        return self.shop.name + '의 뷰티샵컨셉'

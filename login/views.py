@@ -16,6 +16,7 @@ import string
 from .models import *
 import datetime
 from django.utils import timezone
+from config.settings import get_secret
 
 char_string = string.ascii_letters + string.digits
 
@@ -50,7 +51,7 @@ def new_token(request):
         if response.status_code == status.HTTP_200_OK:
             uid = response.json()['user']['uid']
             new_body = json.loads(requests.post(
-                'http://localhost:8000/login/token/', data={"uid": uid, "password": "1234"}).content)  # jwt 토큰생성
+                'http://localhost:8000/login/token/', data={"uid": uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
             user = get_object_or_404(User, uid=uid)
             user.refresh = getRandomString(200)  # secure random string
             user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -73,7 +74,7 @@ def refresh_token(request):
 
         if user.exp > timezone.now():  # 유효할때
             new_body = json.loads(requests.post(
-                'http://localhost:8000/login/token/', data={"uid": user.uid, "password": "1234"}).content)  # jwt 토큰생성
+                'http://localhost:8000/login/token/', data={"uid": user.uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
             del new_body['refresh']  # refresh token 제거
             return Response(new_body)
 

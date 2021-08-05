@@ -35,21 +35,19 @@ DRESS_CHOICES = (
 
 
 class StudioConcept(TimeStampMixin):
-    profile = models.ImageField()
-    shop = models.ForeignKey(
-        Shop, on_delete=models.CASCADE, related_name="studio_concepts")
-    like_users = models.ManyToManyField(
-        User, through='LikeStudioConcept', related_name="like_studio_concepts", null=True, blank=True)
-    like_count = models.IntegerField(default=0)
+    profile = models.ImageField() #concept 사진
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="studio_concepts") #어떤 shop의 concept인지
+    like_users = models.ManyToManyField(User, through='LikeStudioConcept', related_name="like_studio_concepts", null=True, blank=True) #찜한 user들
+    like_count = models.PositiveIntegerField(default=0) #찜수
 
-    head_count = MultiSelectField(choices=HEAD_COUNT_CHOICES)
-    gender = MultiSelectField(choices=GENDER_CHOICES)
-    background = MultiSelectField(choices=BACKGROUND_CHOICES)
-    prop = MultiSelectField(choices=PROP_CHOICES)
-    dress = MultiSelectField(choices=DRESS_CHOICES)
+    head_count = MultiSelectField(choices=HEAD_COUNT_CHOICES) #인원
+    gender = MultiSelectField(choices=GENDER_CHOICES) #성별
+    background = MultiSelectField(choices=BACKGROUND_CHOICES) #배경
+    prop = MultiSelectField(choices=PROP_CHOICES) #소품
+    dress = MultiSelectField(choices=DRESS_CHOICES) #의상
 
     def __str__(self):
-        return self.shop.name + '의 스튜디오컨셉'
+        return self.shop.name + '의 스튜디오컨셉' +'(id: '+str(self.id)+')'
 
 
 class LikeStudioConcept(TimeStampMixin):
@@ -57,10 +55,9 @@ class LikeStudioConcept(TimeStampMixin):
     studio_concept = models.ForeignKey(StudioConcept, on_delete=models.CASCADE)
 
 
-class BeautyShopConcept(TimeStampMixin):
+class BeautyShopConcept(TimeStampMixin): #beautyshop_concept에는 찜 없다
     profile = models.ImageField()
-    shop = models.ForeignKey(
-        Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
 
     def __str__(self):
-        return self.shop.name + '의 뷰티샵컨셉'
+        return self.shop.name + '의 뷰티샵컨셉'+'(id: '+str(self.id)+')'

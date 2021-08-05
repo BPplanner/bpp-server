@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.utils import timezone
 
 
+#모듣 model에 상속하여 생성,업데이트 일자 저장
 class TimeStampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,27 +16,18 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self, uid, username, password=None):
-
         if not uid:
             raise ValueError('must have user uid')
         if not username:
             raise ValueError('must have user username')
 
-        user = self.model(
-            uid=uid,
-            username=username,
-
-        )
+        user = self.model(uid=uid,username=username,)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, uid, username, password=None):
-
-        user = self.create_user(
-            uid=uid,
-            username=username,
-        )
+        user = self.create_user(uid=uid,username=username,)
         user.set_password(password)
         user.is_admin = True
         user.is_superuser = True
@@ -47,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
     objects = UserManager()
 
     uid = models.PositiveBigIntegerField(unique=True, null=True, default=0)
-    username = models.CharField(max_length=10)
+    username = models.CharField(max_length=100)
     exp = models.DateTimeField(default=timezone.now)
     refresh = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)

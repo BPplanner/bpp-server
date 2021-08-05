@@ -24,12 +24,13 @@ def getRandomString(size):
     return ''.join(secrets.choice(char_string) for _ in range(size))
 
 
+# access token으로 user정보 알아내기 
 def get_user(request):
     JWT_authenticator = JWTAuthentication()
-    response = JWT_authenticator.authenticate(request)
+    response = JWT_authenticator.authenticate(request)  # request안에 access token을 이용해서 user객체와 token 추출 
     if response is not None:
         user, token = response
-        return user
+        return user   
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"error": "no token is provided in the header or the header is missing"})
@@ -48,12 +49,12 @@ def new_token(request):
         response = requests.post(url, headers=headers, data=json.dumps(data))
 
         if response.status_code == status.HTTP_200_OK:
-            uid = response.json()['user']['uid']
+            uid = response.json()['user']['uid']  #kakao가 넘겨준 정보중 uid빼오기 
             new_body = json.loads(requests.post(
                 'http://localhost:8000/login/token/', data={"uid": uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
             user = get_object_or_404(User, uid=uid)
-            user.refresh = getRandomString(200)  # secure random string
-            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
+            user.refresh = getRandomString(200)  # secure random string -> refresh token 
+            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장 
             user.save()
             new_body["refresh"] = user.refresh  # refresh token 수정
             return Response(new_body)  # secure random string refreash , access token 전달

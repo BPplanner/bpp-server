@@ -24,6 +24,7 @@ from config.settings import get_secret
 
 
 # https://github.com/Tivix/django-rest-auth/blob/master/rest_auth/registration/serializers.py
+# kakao social login 커스터마이징용
 class SocialLoginSerializer(serializers.Serializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)
@@ -135,12 +136,10 @@ class SocialLoginSerializer(serializers.Serializer):
             login.lookup()
             login.save(request, connect=True)
 
-        # print(login.account.uid)
         login.account.user.uid = login.account.uid  # uid 넣어주기
-        login.account.user.password = get_secret("PASSWORD_HASH")  # password 1234로 넣기
+        login.account.user.password = get_secret("PASSWORD_HASH")  # password 넣기
         attrs['user'] = login.account.user
         login.account.user.save()  # uid 넣어준거 저장
-        # print(login.account.user.username)
         return attrs
 
 

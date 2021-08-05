@@ -10,5 +10,5 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(LikeShop)
 class LikeShopAdmin(admin.ModelAdmin):
-    list_display = ('user', 'shop',)
-    list_display_links = ('user', 'shop',)
+    list_display = ('id', 'user', 'shop',)
+    list_display_links = ('id', 'user', 'shop',)

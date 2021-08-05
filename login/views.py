@@ -1,7 +1,6 @@
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.shortcuts import get_object_or_404
-# from rest_auth.registration.serializers import SocialLoginSerializer
 from rest_auth.registration.views import SocialLoginView
 import requests
 from rest_framework.decorators import api_view
@@ -9,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer, CustomUserDetailsSerializer
+from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
 import string

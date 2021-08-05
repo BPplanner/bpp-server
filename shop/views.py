@@ -59,8 +59,7 @@ class ShopLike(APIView):
             return Response({"result": "shop like create"}, status=status.HTTP_201_CREATED)
 
         elif change_to_like == False:
-            like_shop = get_object_or_404(
-                LikeShop, shop=shop, user=user)  # 찜객체 제거(찜객체 애초에 없으면 404)
+            like_shop = get_object_or_404(LikeShop, shop=shop, user=user)  # 제거할 찜객체(찜객체 애초에 없으면 404)
             like_shop.delete()  # 찜객체 제거
             shop.like_count -= 1  # shop의 찜수 감소
             return Response({"result": "shop like delete"}, status=status.HTTP_204_NO_CONTENT)

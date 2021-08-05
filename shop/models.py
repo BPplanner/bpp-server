@@ -4,7 +4,7 @@ from login.models import *
 
 class Shop(TimeStampMixin):
     STUDIO = 0  # 0 대신 SHOP.STUDIO로 쓰기위해
-    BEAUTYSHOP = 1
+    BEAUTYSHOP = 1  # 1 대신 SHOP.BEAUTYSHOP로 쓰기위해
     SHOP_TYPE_CHOICES = (
         (STUDIO, 'studio'),
         (BEAUTYSHOP, 'beautyshop'),
@@ -18,27 +18,28 @@ class Shop(TimeStampMixin):
         ('seocho', '서초구')
     )
 
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=100, choices=ADDRESS_CHOICES)
-    address_detail = models.TextField(max_length=100)
-    minprice = models.IntegerField()
+    name = models.CharField(max_length=100)  # shop 이름
+    address = models.CharField(max_length=100, choices=ADDRESS_CHOICES)  # 주소에서 구(강남,강동,...)
+    address_detail = models.TextField(max_length=100)  # 전체주소
+    minprice = models.IntegerField()  # 최소가격
 
-    price_desc = models.ImageField()
-    profile = models.ImageField()  # 컨셉중에서 대표사진1
-    profile_2 = models.ImageField()  # 컨셉중에서 대표사진2
-    profile_3 = models.ImageField()  # 컨셉중에서 대표사진3
-    map = models.ImageField()  # 지도
-    kakaourl = models.URLField()
-    logo = models.ImageField()
+    price_desc = models.ImageField()  # 가격설명 사진
+    profile = models.ImageField()  # 대표사진1
+    profile_2 = models.ImageField()  # 대표사진2
+    profile_3 = models.ImageField()  # 대표사진3
+    map = models.ImageField()  # 지도(약도)사진
+    kakaourl = models.URLField()  # 카카오url
+    logo = models.ImageField()  # 로고사진
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop
-    like_users = models.ManyToManyField(User, through='LikeShop', related_name="like_shops", blank=True, null=True)
-    like_count = models.PositiveIntegerField(default=0)
+    like_users = models.ManyToManyField(User, through='LikeShop', related_name="like_shops", blank=True,
+                                        null=True)  # 찜한 user들
+    like_count = models.PositiveIntegerField(default=0)  # 찜수
     affiliates = models.ManyToManyField('self', symmetrical=True, blank=True, null=True)  # 제휴업체 대칭적 관계로
 
     def __str__(self):
-        return str(self.shop_type) + ' ' + self.name
+        return self.name
 
 
-class LikeShop(TimeStampMixin):
+class LikeShop(TimeStampMixin):  # Shop에서 like_users 필드에 through
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)

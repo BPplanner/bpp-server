@@ -34,7 +34,7 @@ class OneShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = (
-            'id', 'name', 'address_detail', 'minprice', 'logo', 'profiles', 'like', 'map', 'kakaourl', 'affiliates')
+            'id', 'name', 'address_detail', 'minprice', 'price_desc', 'logo', 'profiles', 'like', 'map', 'kakaourl', 'affiliates')
 
     def is_like(self, obj):  # user가 특정 shop에 찜을 했는지
         if LikeShop.objects.filter(shop=obj.id, user=self.context['user'].id):

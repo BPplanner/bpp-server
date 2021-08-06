@@ -87,6 +87,14 @@ def refresh_token(request):
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['DELETE'])
+def withdraw(request):
+    user = get_user(request)
+    User.objects.filter(id=user.id).delete()
+    return Response({'detail' : 'Successful withdrawal of members'}, status=status.HTTP_204_NO_CONTENT)
+
+
+
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter
     client_class = OAuth2Client

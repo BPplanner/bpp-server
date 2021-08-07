@@ -3,7 +3,7 @@ from django.db.models.enums import Choices
 from multiselectfield import MultiSelectField
 from shop.models import *
 from login.models import *
-
+from config.validators import validate_file_size
 # CHOICES(https://pypi.org/project/django-multiselectfield/)
 HEAD_COUNT_CHOICES = (
     (1, '1인'),
@@ -36,7 +36,7 @@ DRESS_CHOICES = (
 
 
 class StudioConcept(TimeStampMixin):
-    profile = models.ImageField() #concept 사진
+    profile = models.ImageField(validators=[validate_file_size]) #concept 사진
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="studio_concepts") #어떤 shop의 concept인지
     like_users = models.ManyToManyField(User, through='LikeStudioConcept', related_name="like_studio_concepts", null=True, blank=True) #찜한 user들
     like_count = models.PositiveIntegerField(default=0) #찜수
@@ -57,7 +57,7 @@ class LikeStudioConcept(TimeStampMixin):
 
 
 class BeautyShopConcept(TimeStampMixin): #beautyshop_concept에는 찜 없다
-    profile = models.ImageField()
+    profile = models.ImageField(validators=[validate_file_size])
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="beautyshop_concepts")
 
     def __str__(self):

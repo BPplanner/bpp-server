@@ -1,6 +1,6 @@
 from django.db import models
 from login.models import *
-
+from config.validators import validate_file_size
 
 class Shop(TimeStampMixin):
     STUDIO = 0  # 0 대신 SHOP.STUDIO로 쓰기위해
@@ -23,13 +23,13 @@ class Shop(TimeStampMixin):
     address_detail = models.TextField(max_length=100)  # 전체주소
     minprice = models.IntegerField(null=True,blank=True)  # 최소가격
 
-    price_desc = models.ImageField(null=True,blank=True)  # 가격설명 사진
-    profile = models.ImageField()  # 대표사진1
-    profile_2 = models.ImageField()  # 대표사진2
-    profile_3 = models.ImageField()  # 대표사진3
-    map = models.ImageField()  # 지도(약도)사진
+    price_desc = models.ImageField(null=True,blank=True,validators=[validate_file_size])  # 가격설명 사진
+    profile = models.ImageField(validators=[validate_file_size])  # 대표사진1
+    profile_2 = models.ImageField(validators=[validate_file_size])  # 대표사진2
+    profile_3 = models.ImageField(validators=[validate_file_size])  # 대표사진3
+    map = models.ImageField(validators=[validate_file_size])  # 지도(약도)사진
     kakaourl = models.URLField()  # 카카오url
-    logo = models.ImageField()  # 로고사진
+    logo = models.ImageField(validators=[validate_file_size])  # 로고사진
     shop_type = models.IntegerField(choices=SHOP_TYPE_CHOICES)  # 0 : studio, 1 : beautyshop
     like_users = models.ManyToManyField(User, through='LikeShop', related_name="like_shops", blank=True,
                                         null=True)  # 찜한 user들

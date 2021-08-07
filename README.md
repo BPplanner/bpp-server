@@ -109,7 +109,7 @@
         | :--- | :--- | :--- |
         | `page` | `integer` | **Required**. pagination|
         | `address` | `string` | **Required**. 스튜디오 위치하는 구 필터링|
-        | `like` | `string` | **Required**. 찜한 studio concept만 볼지(true,false) |
+        | `like` | `boolean` | **Required**. 찜한 studio concept만 볼지(true,false) |
      
      
    - response
@@ -162,7 +162,7 @@
         | :--- | :--- | :--- |
         | `page` | `integer` | **Required**. pagination| 
         | `address` | `string` | **Required**. 뷰티샵아 위치하는 구 필터링|
-        | `like` | `string` | **Required**. 찜한 studio concept만 볼지(true,false) |
+        | `like` | `boolean` | **Required**. 찜한 studio concept만 볼지(true,false) |
      
      
    - response
@@ -306,7 +306,7 @@
    - url  
 
         ~~~ http
-        GET /concepts/studios/?head_count=&gender=&background=&prop=&dress=&page=1&like= 
+        GET /concepts/studios/?head_count=&gender=&background=&prop=&dress=&page=&like= 
         ~~~
    - request
 
@@ -319,7 +319,7 @@
         | `prop` | `string` | **Required**. health,mini,etc |
         | `dress` | `string` | **Required**. athleisure,swimsuit,underwear,etc| 
         | `page` | `string` | **Required**. 조회할 페이지(1,2,3...) |
-        | `like` | `string` | **Required**. 찜한 studio concept만 볼지(true,false) |
+        | `like` | `boolean` | **Required**. 찜한 studio concept만 볼지(true,false) |
 
      
      
@@ -388,7 +388,100 @@
 
 
 ##### reservation
+1. 샵 문의중/확정 전체조회
 
+
+   - url  
+
+        ~~~ http
+        GET /reservations?inquiry=
+        ~~~
+   - request
+
+         
+        | Parameter | Type | Description |
+        | :--- | :--- | :--- |
+        | `inquiry` | `boolean` | **Required**. 문의중 조회면 true, 확정&만료 조회면 false |
+
+     
+     
+   - response
+        ~~~json
+        {
+            "remaining_days": 16,
+            "results": [
+                {
+                    "id": 3,
+                    "state": 0,
+                    "reserved_date": null,
+                    "shop": {
+                        "id": 2,
+                        "shop_type": 1,
+                        "name": "beautyshop1",
+                        "logo": "http://3.35.146.251:8000/media/bpp_r5ZQYqs.png"
+                    }
+                }
+            ]
+        }
+        ~~~
+
+2. 샵 문의중 추가
+
+
+   - url  
+
+        ~~~ http
+        POST /reservations/shops/:shop_id
+        ~~~
+   - request
+     
+   - response
+        ~~~json
+        {
+            "result": "reservation create"
+        }
+        ~~~
+
+3. 샵 예약확정 날짜받기
+
+
+   - url  
+
+        ~~~ http
+        PATCH /reservations/:reservation_id
+        ~~~
+   - request
+        ~~~json
+        {
+            "reserved_date": "2021-05-15"
+        }
+        ~~~
+
+     
+     
+   - response
+        ~~~json
+        {
+            "detail": "reserved_date input success"
+        }
+        ~~~
+
+4. 샵 문의중 취소
+
+
+   - url  
+
+        ~~~ http
+        DELETE /reservations/:reservation_id
+        ~~~
+   - request
+     
+   - response
+        ~~~json
+        {
+            "detail": "reservation delete success"
+        }
+        ~~~
 
 ### 디렉토리 구조
 ~~~ bash

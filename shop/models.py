@@ -21,9 +21,9 @@ class Shop(TimeStampMixin):
     name = models.CharField(max_length=100)  # shop 이름
     address = models.CharField(max_length=100, choices=ADDRESS_CHOICES)  # 주소에서 구(강남,강동,...)
     address_detail = models.TextField(max_length=100)  # 전체주소
-    minprice = models.IntegerField()  # 최소가격
+    minprice = models.IntegerField(null=True,blank=True)  # 최소가격
 
-    price_desc = models.ImageField()  # 가격설명 사진
+    price_desc = models.ImageField(null=True,blank=True)  # 가격설명 사진
     profile = models.ImageField()  # 대표사진1
     profile_2 = models.ImageField()  # 대표사진2
     profile_3 = models.ImageField()  # 대표사진3

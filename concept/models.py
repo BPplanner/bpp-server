@@ -25,6 +25,7 @@ PROP_CHOICES = (
     ('health', '헬스도구'),
     ('mini', '소가구'),
     ('etc', '기타소품'),
+    ('none','없음'),
 )
 DRESS_CHOICES = (
     ('athleisure', '애슬레저'),

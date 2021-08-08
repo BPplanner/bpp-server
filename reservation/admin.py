@@ -3,19 +3,6 @@ from .models import *
 
 
 @admin.register(Reservation)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'state',
-        'reserved_date',
-        'user',
-        'shop',
-    )
-
-    list_display_links = (
-        'id',
-        'state',
-        'reserved_date',
-        'user',
-        'shop',
-    )
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ('id','user','shop','state','reserved_date',)
+    list_display_links = ('id','user','shop','state','reserved_date',)

@@ -3,40 +3,18 @@ from .models import *
 
 
 @admin.register(StudioConcept)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = (
-        'shop',
-        'like_count',
-        'gender',
-        'head_count',
-        'background',
-        'prop',
-        'dress',
-    )
-
-    list_display_links = (
-        'shop',
-        'like_count',
-        'gender',
-        'head_count',
-        'background',
-        'prop',
-        'dress',
-    )
+class StudioConceptAdmin(admin.ModelAdmin):
+    list_display = ('id','shop','head_count','gender','background','prop','dress','like_count')
+    list_display_links = ('id','shop','head_count','gender','background','prop','dress','like_count')
 
 
 @admin.register(LikeStudioConcept)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = (
-        'studio_concept',
-        'user'
-
-    )
-
-    list_display_links = (
-        'studio_concept',
-        'user'
-    )
+class LikeStudioConceptAdmin(admin.ModelAdmin):
+    list_display = ('id','studio_concept','user')
+    list_display_links = ('id','studio_concept','user')
 
 
-admin.site.register(BeautyShopConcept)
+@admin.register(BeautyShopConcept)
+class BeautyShopConceptAdmin(admin.ModelAdmin):
+    list_display = ('id','shop',)
+    list_display_links = ('id','shop',)

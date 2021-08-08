@@ -28,7 +28,8 @@ def get_secret(setting, secrets=secrets):
         return secrets[setting]
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+        raise 
+        # raise ImproperlyConfigured(error_msg)
 
 
 SECRET_KEY = get_secret("SECRET_KEY")
@@ -76,8 +77,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* 0 * * *', 'reservation.cron.reservation_state_change'),
-    ('* * * * *', 'reservation.cron.hello', '>> cron.log'),
+    ('1 0 * * *', 'reservation.cron.reservation_state_change')
 ]
 
 
@@ -125,11 +125,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': get_secret("DB_NAME"),
+    'USER': get_secret("DB_USER"),
+    'PASSWORD': get_secret("DB_PASSWORD"),
+    'HOST': get_secret("DB_HOST"),
+    'PORT': '3306',
+   }
 }
 
 

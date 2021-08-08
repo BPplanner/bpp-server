@@ -1,7 +1,6 @@
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.shortcuts import get_object_or_404
-# from rest_auth.registration.serializers import SocialLoginSerializer
 from rest_auth.registration.views import SocialLoginView
 import requests
 from rest_framework.decorators import api_view
@@ -9,13 +8,14 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer, CustomUserDetailsSerializer
+from .serializers import SocialLoginSerializer, MyTokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import secrets
 import string
 from .models import *
 import datetime
 from django.utils import timezone
+from config.settings import get_secret
 
 char_string = string.ascii_letters + string.digits
 
@@ -24,12 +24,13 @@ def getRandomString(size):
     return ''.join(secrets.choice(char_string) for _ in range(size))
 
 
+# access token으로 user정보 알아내기 
 def get_user(request):
     JWT_authenticator = JWTAuthentication()
-    response = JWT_authenticator.authenticate(request)
+    response = JWT_authenticator.authenticate(request)  # request안에 access token을 이용해서 user객체와 token 추출 
     if response is not None:
         user, token = response
-        return user
+        return user   
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"error": "no token is provided in the header or the header is missing"})
@@ -48,16 +49,17 @@ def new_token(request):
         response = requests.post(url, headers=headers, data=json.dumps(data))
 
         if response.status_code == status.HTTP_200_OK:
-            uid = response.json()['user']['uid']
+            uid = response.json()['user']['uid']  #kakao가 넘겨준 정보중 uid빼오기 
             new_body = json.loads(requests.post(
-                'http://localhost:8000/login/token/', data={"uid": uid, "password": "1234"}).content)  # jwt 토큰생성
+                'http://localhost:8000/login/token/', data={"uid": uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
             user = get_object_or_404(User, uid=uid)
-            user.refresh = getRandomString(200)  # secure random string
-            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)
+            user.refresh = getRandomString(200)  # secure random string -> refresh token 
+            user.exp = datetime.datetime.now() + datetime.timedelta(days=7)  # refresh 유효기간 저장 
             user.save()
             new_body["refresh"] = user.refresh  # refresh token 수정
             return Response(new_body)  # secure random string refreash , access token 전달
-
+        else:
+            return Response({"detail": "kakao response status code is not 200","status":response.status_code, "response":response.text}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"detail": "access_token not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -73,7 +75,7 @@ def refresh_token(request):
 
         if user.exp > timezone.now():  # 유효할때
             new_body = json.loads(requests.post(
-                'http://localhost:8000/login/token/', data={"uid": user.uid, "password": "1234"}).content)  # jwt 토큰생성
+                'http://localhost:8000/login/token/', data={"uid": user.uid, "password": get_secret("PASSWORD")}).content)  # jwt 토큰생성
             del new_body['refresh']  # refresh token 제거
             return Response(new_body)
 
@@ -84,6 +86,14 @@ def refresh_token(request):
     else:  # refresh token 일치하지 않을 때
         msg = {'error message': 'refresh token is mismatched'}
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def withdraw(request):
+    user = get_user(request)
+    User.objects.filter(id=user.id).delete()
+    return Response({'detail' : 'Successful withdrawal of members'}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 class KakaoLogin(SocialLoginView):

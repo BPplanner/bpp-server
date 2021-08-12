@@ -32,6 +32,8 @@ class ReservationList(APIView):
 class AddReservation(APIView):
     def post(self, request, pk):
         shop = get_object_or_404(Shop, id=pk)  # 해당 shop 없으면 404
+        if Reservation.objects.filter(state=Reservation.INQUIRY,user=get_user(request), shop=shop):
+            return Response({"detail": "already reservation exist"}, status=status.HTTP_400_BAD_REQUEST)
         reservation = Reservation(state=Reservation.INQUIRY, reserved_date=None, user=get_user(request), shop=shop) #예약확정날짜는 비우고 문의중으로 추가
         reservation.save()
         return Response({"result": "reservation create"}, status=status.HTTP_201_CREATED)
@@ -52,7 +54,7 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED #문의중에서 예약확정으로 상태변경
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')  # 예약날짜 저장
         reservation.save()
-        return Response( status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def delete(self, request, pk):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
@@ -62,4 +64,4 @@ class ReservationDetail(APIView):
             return Response({'detail': 'user has no authority in this reservation'},
                             status=status.HTTP_401_UNAUTHORIZED)
         reservation.delete() #예약 제거
-        return Response( status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)

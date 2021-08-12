@@ -74,6 +74,9 @@ INSTALLED_APPS = [
 
     # crontab
     'django_crontab',
+
+    # https
+    'sslserver',
 ]
 
 CRONJOBS = [

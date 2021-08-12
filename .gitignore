@@ -338,3 +338,5 @@ pip-selfcheck.json
 
 # 보안키
 secrets.json
+django.crt
+django.key

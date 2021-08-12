@@ -64,7 +64,7 @@ class StudioConceptLike(APIView):
             like_studio_concept = get_object_or_404(LikeStudioConcept, studio_concept=studio_concept, user=user)  # 제거할 찜객체(찜객체 애초에 없으면 404)
             like_studio_concept.delete() #찜객체 제거
             studio_concept.like_count -= 1  # studio_concept의 찜수 감소
-            return Response({"result": "studio_concept like delete"}, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         else:
             return Response({"detail": "key should be true or false"}, status=status.HTTP_400_BAD_REQUEST)

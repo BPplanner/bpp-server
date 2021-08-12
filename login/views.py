@@ -92,7 +92,7 @@ def refresh_token(request):
 def withdraw(request):
     user = get_user(request)
     User.objects.filter(id=user.id).delete()
-    return Response({'detail' : 'Successful withdrawal of members'}, status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

@@ -52,7 +52,7 @@ class ReservationDetail(APIView):
         reservation.state = Reservation.CONFIRMED #문의중에서 예약확정으로 상태변경
         reservation.reserved_date = json.loads(request.body.decode('utf-8')).get('reserved_date')  # 예약날짜 저장
         reservation.save()
-        return Response({"detail": "reserved_date input success"}, status=status.HTTP_204_NO_CONTENT)
+        return Response( status=status.HTTP_204_NO_CONTENT)
 
     def delete(self, request, pk):
         user = get_user(request) # access_token에서 user 누군지 꺼내기
@@ -62,4 +62,4 @@ class ReservationDetail(APIView):
             return Response({'detail': 'user has no authority in this reservation'},
                             status=status.HTTP_401_UNAUTHORIZED)
         reservation.delete() #예약 제거
-        return Response({"detail": "reservation delete success"}, status=status.HTTP_204_NO_CONTENT)
+        return Response( status=status.HTTP_204_NO_CONTENT)

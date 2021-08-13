@@ -6,7 +6,7 @@ from .models import *
 class ReservationShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
-        fields = ('id', 'shop_type', 'name', 'logo',)
+        fields = ('id', 'shop_type', 'name', 'logo','kakaourl')
 
 
 class ReservationSerializer(serializers.ModelSerializer):
